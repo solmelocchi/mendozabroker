@@ -1,0 +1,598 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Multirisk SpA · Seguro de transporte de carga</title>
+<meta name="description" content="Seguro de transporte de carga en Argentina y Chile. Certificado online en 5 minutos, con cobertura de origen a destino final.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gloock&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root { --fondo:#0B1110; --fondo2:#121A19; --texto:#F1F4F2; --suave:#B9C4C1; --acento:#A9C7C4; --linea:#ffffff24;
+  --claro:#F1F4F2; --tinta:#0F1716; --tinta2:#55625F; --lineaC:#0f171622; --lado:clamp(20px,5vw,72px); }
+* { box-sizing:border-box; margin:0; padding:0; }
+html { background:var(--fondo); scroll-behavior:smooth; }
+body { color:var(--texto); font-family:"Hanken Grotesk","Segoe UI",sans-serif; line-height:1.5; touch-action:pan-y; overflow-x:hidden; }
+body.arrastrando { user-select:none; }
+canvas { position:fixed; inset:0; width:100%; height:100%; display:block; z-index:0; }
+.velo { position:fixed; inset:0; pointer-events:none; z-index:1;
+  background:linear-gradient(90deg, #0B1110f2 0%, #0B1110c4 30%, #0B111000 62%), linear-gradient(0deg, #0B1110cc 0%, #0B111000 28%); }
+h1, h2, h3 { font-family:"Gloock",Georgia,serif; font-weight:400; }
+h2 { font-size:clamp(36px,4.6vw,68px); line-height:1.06; letter-spacing:-.01em; }
+a { color:inherit; }
+
+nav { position:fixed; top:0; left:0; right:0; display:flex; align-items:center; justify-content:space-between;
+  gap:20px; padding:24px var(--lado); z-index:10; transition:background .3s, padding .3s; }
+nav.pegado { background:#0B1110e6; backdrop-filter:blur(10px); padding-top:14px; padding-bottom:14px; }
+.marca { font-family:"Gloock",Georgia,serif; font-size:24px; letter-spacing:.01em; color:var(--texto); text-decoration:none; }
+.pais { display:flex; gap:2px; border:1px solid var(--linea); border-radius:999px; padding:3px; }
+.pais button { background:none; border:0; color:var(--suave); font:inherit; font-size:13px; font-weight:500;
+  padding:6px 12px; border-radius:999px; cursor:pointer; }
+.pais button.activo { background:var(--texto); color:var(--fondo); }
+
+.kicker { font-size:14px; color:var(--acento); letter-spacing:.02em; }
+.btn { display:inline-flex; align-items:center; gap:10px; padding:15px 26px; border-radius:999px; font:inherit; font-size:15px; font-weight:600;
+  text-decoration:none; border:0; cursor:pointer; transition:transform .25s; }
+.btn:hover { transform:translateY(-2px); }
+.btn.lleno { background:var(--texto); color:var(--fondo); }
+.btn.borde { border:1px solid #ffffff55; color:var(--texto); }
+
+/* portada */
+.portada { position:relative; z-index:2; min-height:100svh; display:flex; flex-direction:column; justify-content:flex-end;
+  padding:110px var(--lado) clamp(48px,9vh,88px); pointer-events:none; }
+.portada > * { pointer-events:auto; }
+.portada .pie-texto { width:min(780px,100%); }
+.portada .kicker { margin-bottom:18px; }
+h1 { font-size:clamp(44px,5.5vw,84px); line-height:1.03; letter-spacing:-.01em; }
+h1 em { font-style:normal; color:var(--acento); display:block; }
+.bajada { font-size:clamp(16px,1.35vw,19px); color:var(--suave); margin-top:22px; max-width:500px; }
+.acciones { display:flex; flex-wrap:wrap; gap:12px; margin-top:30px; }
+.etiqueta { position:fixed; z-index:2; font-size:13px; font-weight:500; color:var(--texto); pointer-events:none; white-space:nowrap;
+  transform:translate(-50%,70%); text-shadow:0 1px 8px #000; transition:opacity .2s; }
+
+/* transporte: los puntos del globo forman cada vehículo */
+.transporte { position:relative; z-index:2; height:420vh; pointer-events:none; }
+.medio { position:fixed; left:var(--lado); top:50%; --c:-50%; --y:0px; transform:translateY(calc(var(--c) + var(--y))); width:min(470px,calc(100% - 40px)); opacity:0; visibility:hidden; }
+.medio .num { font-size:14px; color:var(--acento); margin-bottom:14px; }
+.medio p.txt { font-size:clamp(16px,1.3vw,19px); color:var(--suave); margin-top:16px; }
+.barra { position:fixed; left:var(--lado); bottom:40px; display:flex; gap:8px; opacity:0; }
+.barra i { display:block; width:46px; height:2px; background:var(--linea); position:relative; overflow:hidden; }
+.barra i b { position:absolute; inset:0; background:var(--acento); transform-origin:left; transform:scaleX(0); }
+
+/* secciones sólidas: tapan el 3D */
+.bloque { position:relative; z-index:3; padding:clamp(72px,11vh,130px) var(--lado); }
+.claro { background:var(--claro); color:var(--tinta); }
+.oscuro { background:var(--fondo); }
+.ancho { max-width:1240px; margin:0 auto; }
+.aparece { opacity:0; transform:translateY(22px); transition:opacity .7s, transform .7s; }
+.aparece.visto { opacity:1; transform:none; }
+
+/* respaldo */
+.blanco { background:#fff; color:var(--tinta); }
+.resp { display:grid; grid-template-columns:1fr 1fr; gap:clamp(28px,6vw,90px); align-items:end; }
+.resp .txt { color:var(--tinta2); font-size:18px; margin-top:18px; max-width:520px; }
+.numeros { display:grid; grid-template-columns:repeat(3,auto); justify-content:space-between; gap:clamp(18px,3vw,44px); }
+.numeros strong { font-family:"Gloock",Georgia,serif; font-weight:400; font-size:clamp(46px,5.2vw,78px); line-height:1; color:var(--tinta); display:block; white-space:nowrap; font-variant-numeric:tabular-nums; }
+.numeros p { font-size:15px; color:var(--tinta2); margin-top:10px; max-width:150px; }
+.logos { display:grid; grid-template-columns:1.1fr repeat(5,1fr); align-items:stretch; margin-top:clamp(52px,9vh,88px); border-top:1px solid var(--lineaC); padding-top:30px; }
+.logos p { font-size:13px; font-weight:600; color:var(--tinta2); align-self:center; max-width:150px; padding-right:20px; }
+.logos div { display:flex; align-items:center; justify-content:center; min-height:84px; padding:8px 18px; border-left:1px solid var(--lineaC); }
+.logos img { max-height:42px; max-width:100%; width:auto; object-fit:contain; filter:brightness(0); opacity:.55; transition:opacity .25s; }
+.logos img:hover { opacity:.85; }
+.cinta { overflow:hidden; margin-top:clamp(36px,6vh,56px); border-top:1px solid var(--lineaC); border-bottom:1px solid var(--lineaC); padding:20px 0;
+  margin-left:calc(var(--lado) * -1); margin-right:calc(var(--lado) * -1); }
+.cinta div { display:flex; gap:56px; width:max-content; animation:corre 34s linear infinite; }
+.cinta span { font-family:"Gloock",Georgia,serif; font-size:24px; color:var(--tinta); white-space:nowrap; }
+@keyframes corre { to { transform:translateX(-50%); } }
+
+/* preguntas */
+.preguntas { display:grid; grid-template-columns:.8fr 1.2fr; gap:clamp(28px,6vw,90px); }
+details { border-bottom:1px solid var(--lineaC); }
+details:first-child { border-top:1px solid var(--lineaC); }
+summary { list-style:none; cursor:pointer; padding:20px 34px 20px 0; font-size:18px; font-weight:600; position:relative; }
+summary::-webkit-details-marker { display:none; }
+summary::after { content:"+"; position:absolute; right:4px; top:16px; font-size:24px; font-weight:400; }
+details[open] summary::after { content:"–"; }
+details p { color:var(--tinta2); padding:0 34px 22px 0; font-size:16px; }
+
+/* cotizar */
+.cotizar { display:grid; grid-template-columns:.8fr 1.2fr; gap:clamp(28px,6vw,90px); align-items:start; }
+.cotizar .txt { color:var(--suave); font-size:18px; margin-top:16px; }
+form { background:var(--claro); color:var(--tinta); border-radius:20px; padding:clamp(22px,3vw,38px); }
+.campos { display:grid; grid-template-columns:1fr 1fr; gap:16px 18px; }
+.campo { display:flex; flex-direction:column; gap:6px; min-width:0; }
+.campo.todo { grid-column:1/-1; }
+label { font-size:13px; font-weight:600; }
+input, select, textarea { width:100%; border:1px solid var(--lineaC); background:#fff; border-radius:10px; padding:13px; color:var(--tinta); font:inherit; font-size:15px; outline:none; }
+input:focus, select:focus, textarea:focus { border-color:var(--tinta); }
+textarea { resize:none; min-height:104px; }
+.pie-form { display:flex; flex-direction:column-reverse; gap:14px; margin-top:20px; }
+.pie-form small { color:var(--tinta2); font-size:12px; }
+.btn.tinta { background:var(--tinta); color:var(--claro); }
+.aviso { display:none; margin-top:16px; padding:13px 15px; border-radius:10px; background:#E5EEEB; font-size:14px; }
+.aviso.ver { display:block; }
+.envios { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.envios .btn { justify-content:center; white-space:nowrap; }
+.btn.lineaT { background:none; border:1px solid var(--tinta); color:var(--tinta); }
+.btn:disabled { opacity:.6; cursor:default; }
+
+footer { position:relative; z-index:3; background:var(--fondo); border-top:1px solid var(--linea); padding:44px var(--lado) 30px; color:var(--suave); font-size:14px; }
+.pie { display:flex; flex-wrap:wrap; justify-content:space-between; gap:24px; }
+.pie .marca { display:block; margin-bottom:8px; }
+.legal { font-size:12px; color:#8A9794; margin-top:26px; max-width:960px; }
+
+@media (max-width:900px) {
+  .velo { background:linear-gradient(0deg, #0B1110f7 0%, #0B1110d9 44%, #0B111000 74%); }
+  nav { padding:18px 20px; }
+  .portada { padding-bottom:40px; }
+  h1 { font-size:clamp(38px,11vw,52px); }
+  .bajada { margin-top:14px; font-size:15px; }
+  .numeros { grid-template-columns:repeat(3,auto); }
+  .numeros strong { font-size:40px; }
+  .numeros p { font-size:13px; max-width:100px; }
+  .logos { grid-template-columns:1fr 1fr; }
+  .logos p { grid-column:1/-1; max-width:none; padding-bottom:12px; }
+  .logos div { border-left:0; min-height:70px; }
+  .acciones { margin-top:20px; }
+  .btn { padding:13px 20px; font-size:14px; }
+  .medio { top:auto; bottom:84px; --c:0%; }
+  .preguntas, .cotizar, .resp { grid-template-columns:1fr; }
+  .campos { grid-template-columns:1fr; }
+  .envios { grid-template-columns:1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior:auto; }
+  .aparece { opacity:1; transform:none; transition:none; }
+  .cinta div { animation:none; }
+}
+</style>
+</head>
+<body>
+<canvas id="lienzo" aria-hidden="true"></canvas>
+<div class="velo"></div>
+
+<nav id="nav">
+  <a class="marca" href="#inicio" data-t="marca"></a>
+  <div class="pais" role="group" aria-label="País">
+    <button data-pais="ar">AR</button><button data-pais="cl" class="activo">CL</button>
+  </div>
+</nav>
+
+<section class="portada" id="inicio">
+  <div class="pie-texto">
+    <p class="kicker">Seguro de transporte de carga · Argentina y Chile</p>
+    <h1>Tu carga se mueve.<em>Tu tranquilidad también.</em></h1>
+    <p class="bajada">Certificado online en 5 minutos, con cobertura, de origen a destino final.</p>
+    <div class="acciones">
+      <a class="btn lleno" href="#cotizar" data-t="cotiza"></a>
+      <a class="btn borde" href="#" data-whatsapp>WhatsApp</a>
+    </div>
+  </div>
+</section>
+<div class="etiqueta" id="et1">Argentina y Chile</div>
+
+<section class="transporte" id="transporte" aria-label="Medios de transporte">
+      <div class="medio" data-medio="0">
+      <p class="num">01 · Por aire</p>
+      <h2 data-t="aireT"></h2>
+      <p class="txt" data-t="aireP"></p>
+    </div>
+    <div class="medio" data-medio="1">
+      <p class="num">02 · Por mar</p>
+      <h2 data-t="marT"></h2>
+      <p class="txt" data-t="marP"></p>
+    </div>
+    <div class="medio" data-medio="2">
+      <p class="num">03 · Por tierra</p>
+      <h2 data-t="tierraT"></h2>
+      <p class="txt" data-t="tierraP"></p>
+    </div>
+    <div class="barra" aria-hidden="true"><i><b></b></i><i><b></b></i><i><b></b></i></div>
+</section>
+
+<section class="bloque blanco" id="respaldo">
+  <div class="ancho">
+    <div class="resp">
+      <div class="aparece">
+        <h2 data-t="respT"></h2>
+        <p class="txt" data-t="respP"></p>
+      </div>
+      <div class="numeros" id="numeros">
+        <div><strong><span data-cuenta="25" data-antes="+">0</span></strong><p>años de trayectoria</p></div>
+        <div><strong><span data-cuenta="5">0</span> min</strong><p>para emitir el certificado online</p></div>
+        <div><strong><span data-cuenta="5">0</span></strong><p>aseguradoras líderes</p></div>
+      </div>
+    </div>
+    <div class="logos" aria-label="Aseguradoras">
+      <p>Aseguradoras con las que trabajamos</p>
+      <div><img src="logos/sancor.png" alt="Sancor Seguros"></div>
+      <div><img src="logos/chubb.svg" alt="Chubb"></div>
+      <div><img src="logos/integrity.png" alt="Integrity Seguros"></div>
+      <div><img src="logos/mercantil.png" alt="La Mercantil Andina"></div>
+      <div><img src="logos/everest.png" alt="Everest"></div>
+    </div>
+    <div class="cinta" aria-label="Clientes"><div id="cinta"></div></div>
+  </div>
+</section>
+
+<section class="bloque claro" id="preguntas">
+  <div class="ancho preguntas">
+    <h2 class="aparece">Preguntas frecuentes</h2>
+    <div id="faq"></div>
+  </div>
+</section>
+
+<section class="bloque oscuro" id="cotizar">
+  <div class="ancho cotizar">
+    <div class="aparece">
+      <h2 data-t="cotT"></h2>
+      <p class="txt" data-t="cotP"></p>
+    </div>
+    <form id="formulario" action="https://formspree.io/f/xgvnkrrb" method="POST" novalidate>
+      <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">
+      <div class="campos">
+        <div class="campo"><label for="empresa">Nombre de la empresa *</label><input id="empresa" name="empresa" required autocomplete="organization" placeholder="Razón social o nombre comercial"></div>
+        <div class="campo"><label for="idFiscal" data-t="idFiscal"></label><input id="idFiscal" name="id_fiscal"></div>
+        <div class="campo"><label for="rubro">Rubro *</label><select id="rubro" name="rubro" required><option value="">Seleccionar</option><option>Transporte y logística</option><option>Agente de carga</option><option>Importación</option><option>Exportación</option><option>Comercio y distribución</option><option>Industria / manufactura</option><option>Agroindustria</option><option>Construcción / minería</option><option>Otra actividad</option></select></div>
+        <div class="campo"><label for="mercaderia">Tipo de mercadería *</label><input id="mercaderia" name="mercaderia" required placeholder="Ej.: alimentos, maquinaria, químicos"></div>
+        <div class="campo"><label for="viaje">Tipo de viaje *</label><select id="viaje" name="tipo_de_viaje" required><option value="">Seleccionar</option><option>Terrestre</option><option>Marítimo</option><option>Aéreo</option><option>Multimodal (combinado)</option></select></div>
+        <div class="campo"><label for="seguro" data-t="seguroL"></label><select id="seguro" name="seguro" required><option value="">Seleccionar</option><option>Seguro de mercaderías / carga</option><option>Responsabilidad civil del transportista</option><option>Ambas coberturas</option><option>No lo sé, necesito asesoramiento</option></select></div>
+        <div class="campo"><label for="paises">País o países de la operación *</label><input id="paises" name="paises" required placeholder="Ej.: Chile, Perú, Argentina"></div>
+        <div class="campo"><label for="telefono">Teléfono de contacto *</label><input id="telefono" name="telefono" type="tel" required autocomplete="tel"></div>
+        <div class="campo todo"><label for="correo">Correo electrónico *</label><input id="correo" name="email" type="email" required autocomplete="email"></div>
+        <div class="campo todo"><label for="detalle" data-t="detalleL"></label><textarea id="detalle" name="detalle" placeholder="Frecuencia de viajes, origen y destino, valor aproximado de la carga"></textarea></div>
+      </div>
+      <div class="pie-form">
+        <small data-t="autoriza"></small>
+        <div class="envios">
+          <button class="btn tinta" type="submit" id="enviar">Enviar por mail</button>
+          <button class="btn lineaT" type="button" id="enviarWa">Enviar por WhatsApp</button>
+        </div>
+      </div>
+      <p class="aviso" id="aviso" role="status"></p>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <div class="pie">
+    <div><a class="marca" href="#inicio" data-t="marca"></a><span data-t="piePais"></span></div>
+    <div><span data-t="pieContacto"></span><br><span data-t="pieRegistro"></span></div>
+  </div>
+  <p class="legal">La información de este sitio es referencial y no constituye una oferta ni una confirmación de cobertura. La aceptación del riesgo, las coberturas, los límites, los deducibles, las exclusiones y la vigencia dependen de la evaluación de cada operación y de las condiciones de la póliza que emita la compañía aseguradora.</p>
+</footer>
+
+<script src="vendor/three.min.js"></script>
+<script src="vendor/tierra.js"></script>
+<script>
+// ------------------------------------------------------------ textos por país
+const BASE = {
+  marca:"Multirisk SpA", cotiza:"Cotiza tu carga",
+  aireT:"Lo que no puede esperar.", aireP:"Carga aérea asegurada desde el retiro en origen hasta la entrega final.",
+  marT:"De puerto a puerto, y más allá.", marP:"Exportaciones e importaciones por mar, con los tramos terrestres incluidos en el recorrido.",
+  tierraT:"También cruzando la cordillera.", tierraP:"Rutas nacionales e internacionales, cada viaje con su certificado antes de que el camión salga.",
+  respT:"Si algo pasa, no gestionas el reclamo solo.", respP:"Te acompañamos en cada siniestro y lo gestionamos directamente con la aseguradora y los estudios liquidadores.",
+  cotT:"Cuéntanos qué necesitas transportar.", cotP:"Completa los datos de tu empresa y de la operación, y te contactamos para avanzar con la cotización. Sin compromiso.",
+  idFiscal:"RUT de la empresa", seguroL:"Seguro que necesitas *", detalleL:"Cuéntanos un poco más sobre tu operación",
+  autoriza:"Al enviar, autorizas a Multirisk SpA a usar estos datos para responder tu solicitud.",
+  piePais:"Seguro de transporte de carga en Chile", pieContacto:"[Correo y teléfono de Multirisk SpA]", pieRegistro:"[N.º de registro CMF]",
+  tel:"+56 9 1234 5678", mail:"nombre@empresa.cl", enviado:"Recibimos tu solicitud. Te contactamos a la brevedad.", fallo:"No pudimos enviar tu solicitud. Inténtalo de nuevo o envíala por WhatsApp.", abierto:"Se abrió WhatsApp con tus datos. Solo falta apretar enviar.", enviando:"Enviando…",
+  faltan:"Revisa los campos obligatorios y el formato del correo.", whatsapp:"https://wa.me/5492613424839",
+};
+const PAISES = {
+  cl: BASE,
+  ar: { ...BASE, marca:"World Logistic", cotiza:"Cotizá tu carga",
+    respT:"Si algo pasa, no gestionás el reclamo solo.", respP:"Te acompañamos en cada siniestro y lo gestionamos directamente con la aseguradora y los estudios liquidadores.",
+    cotT:"Contanos qué necesitás transportar.", cotP:"Completá los datos de tu empresa y de la operación, y te contactamos para avanzar con la cotización. Sin compromiso.",
+    idFiscal:"CUIT de la empresa", seguroL:"Seguro que necesitás *", detalleL:"Contanos un poco más sobre tu operación",
+    autoriza:"Al enviar, autorizás a World Logistic a usar estos datos para responder tu solicitud.",
+    piePais:"Seguro de transporte de carga en Argentina", pieContacto:"[Correo de World Logistic] · WhatsApp 261 342 4839", pieRegistro:"[N.º de matrícula SSN]",
+    tel:"+54 9 261 123 4567", mail:"nombre@empresa.com.ar", enviado:"Recibimos tu solicitud. Te contactamos a la brevedad.", fallo:"No pudimos enviar tu solicitud. Intentá de nuevo o mandala por WhatsApp.", abierto:"Se abrió WhatsApp con tus datos. Solo falta apretar enviar.", enviando:"Enviando…",
+    faltan:"Revisá los campos obligatorios y el formato del correo." },
+};
+const FAQ = {
+  cl: [["¿Qué cubre el seguro?","Depende de la póliza y de cada operación. Antes de emitir revisamos la mercadería, el trayecto y los riesgos cubiertos, para que sepas qué incluye y qué no."],
+       ["¿Cuánto cuesta?","Depende de la mercadería, su valor y el trayecto, por eso cotizamos cada operación. No hay costo fijo: pagas por lo que despachas."],
+       ["¿Cuánto tarda el certificado?","Se emite online en 5 minutos. Nos envías los datos del despacho por WhatsApp o por correo y gestionamos la emisión."],
+       ["¿Qué hago si hay un siniestro?","Avísanos de inmediato y guarda fotos y documentos del transporte. Desde ahí gestionamos el reclamo con la aseguradora y el liquidador."],
+       ["¿El seguro del transportista cubre mi mercadería?","No hay que darlo por hecho: esa póliza puede tener otro alcance y otros límites. Si nos la compartes, te ayudamos a revisarla."]],
+  ar: [["¿Qué cubre el seguro?","Depende de la póliza y de cada operación. Antes de emitir revisamos la mercadería, el trayecto y los riesgos cubiertos, para que sepas qué incluye y qué no."],
+       ["¿Cuánto cuesta?","Depende de la mercadería, su valor y el trayecto, por eso cotizamos cada operación. No hay costo fijo: pagás por lo que despachás."],
+       ["¿Cuánto tarda el certificado?","Se emite online en 5 minutos. Nos mandás los datos del despacho por WhatsApp o por mail y gestionamos la emisión."],
+       ["¿Qué hago si hay un siniestro?","Avisanos de inmediato y guardá fotos y documentos del transporte. Desde ahí gestionamos el reclamo con la aseguradora y el liquidador."],
+       ["¿El seguro del transportista cubre mi mercadería?","No hay que darlo por hecho: esa póliza puede tener otro alcance y otros límites. Si nos la compartís, te ayudamos a revisarla."]],
+};
+const CLIENTES = ["Marblau","JF Hillebrand","Mar Pacífico","Inland","BGL","BHA Transporte","AVA S.A.","Viñas Las Perdices","Bodega La Esperanza","RPV","Pitrielli Export"];
+
+let pais = "cl";
+function pintarPais() {
+  const T = PAISES[pais];
+  document.querySelectorAll("[data-t]").forEach(e => e.textContent = T[e.dataset.t]);
+  document.querySelectorAll("[data-pais]").forEach(b => b.classList.toggle("activo", b.dataset.pais===pais));
+  document.querySelectorAll("[data-whatsapp]").forEach(a => a.href = T.whatsapp);
+  document.title = T.marca + " · Seguro de transporte de carga";
+  document.getElementById("telefono").placeholder = T.tel;
+  document.getElementById("correo").placeholder = T.mail;
+  document.getElementById("aviso").classList.remove("ver");
+  document.getElementById("faq").innerHTML = FAQ[pais].map(([q,r],i) => "<details"+(i?"":" open")+"><summary>"+q+"</summary><p>"+r+"</p></details>").join("");
+}
+document.querySelectorAll("[data-pais]").forEach(b => b.onclick = () => { pais=b.dataset.pais; pintarPais(); });
+document.getElementById("cinta").innerHTML = [...CLIENTES,...CLIENTES].map(c => "<span>"+c+"</span>").join("");
+pintarPais();
+
+const form = document.getElementById("formulario"), botonMail = document.getElementById("enviar"), botonWa = document.getElementById("enviarWa");
+const aviso = document.getElementById("aviso");
+const decir = t => { aviso.textContent = t; aviso.classList.add("ver"); };
+function datosDe(canal, T) {
+  const datos = new FormData(form);
+  datos.append("empresa_del_grupo", T.marca);
+  datos.append("canal", canal);
+  datos.append("_subject", "Nueva cotización · " + T.marca + " · " + datos.get("empresa"));
+  return datos;
+}
+function textoWhatsapp(datos, T) {
+  const v = n => datos.get(n) || "-";
+  return "Hola, quiero cotizar con " + T.marca + ".\n\nEmpresa: " + v("empresa") + "\nRubro: " + v("rubro") +
+    "\nMercadería: " + v("mercaderia") + "\nTipo de viaje: " + v("tipo_de_viaje") + "\nSeguro: " + v("seguro") +
+    "\nPaíses: " + v("paises") + "\nTeléfono: " + v("telefono") + "\nCorreo: " + v("email") + "\nDetalle: " + v("detalle");
+}
+const mandar = datos => fetch(form.action, { method:"POST", body:datos, headers:{ Accept:"application/json" } });
+function valido(T) { if (form.checkValidity()) return true; decir(T.faltan); form.reportValidity(); return false; }
+
+// por mail: llega a Formspree y se confirma en pantalla
+form.addEventListener("submit", async e => {
+  e.preventDefault();
+  const T = PAISES[pais]; if (!valido(T)) return;
+  const original = botonMail.textContent;
+  botonMail.disabled = true; botonMail.textContent = T.enviando;
+  try {
+    const r = await mandar(datosDe("Mail", T));
+    if (!r.ok) throw new Error(r.status);
+    decir(T.enviado); form.reset();
+  } catch (err) { decir(T.fallo); }
+  botonMail.disabled = false; botonMail.textContent = original;
+});
+
+// por WhatsApp: abre el chat con los datos, y queda registrado igual por si no aprieta enviar
+botonWa.addEventListener("click", () => {
+  const T = PAISES[pais]; if (!valido(T)) return;
+  const datos = datosDe("WhatsApp", T);
+  window.open(T.whatsapp + "?text=" + encodeURIComponent(textoWhatsapp(datos, T)), "_blank", "noopener");
+  decir(T.abierto);
+  mandar(datos).catch(() => {});
+});
+const obs = new IntersectionObserver(es => es.forEach(x => { if (x.isIntersecting) { x.target.classList.add("visto"); obs.unobserve(x.target); } }), { threshold:.15 });
+document.querySelectorAll(".aparece").forEach(e => obs.observe(e));
+const contar = new IntersectionObserver(es => es.forEach(x => {
+  if (!x.isIntersecting) return; contar.disconnect();
+  document.querySelectorAll("[data-cuenta]").forEach(e => {
+    const fin=+e.dataset.cuenta, antes=e.dataset.antes||"", ini=performance.now(), dur=1600;
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) { e.textContent=antes+fin; return; }
+    (function paso(t) { const k=Math.min(1,(t-ini)/dur), v=1-Math.pow(1-k,3);
+      e.textContent=antes+Math.round(fin*v); if (k<1) requestAnimationFrame(paso); })(ini);
+  });
+}), { threshold:.4 });
+contar.observe(document.getElementById("numeros"));
+
+// ------------------------------------------------------------ escena
+const quieto = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const lienzo = document.getElementById("lienzo"), et1 = document.getElementById("et1"), nav = document.getElementById("nav");
+const render = new THREE.WebGLRenderer({ canvas:lienzo, antialias:true });
+render.setPixelRatio(Math.min(devicePixelRatio, 1.75));
+render.setClearColor(0x0B1110);
+render.toneMapping = THREE.ACESFilmicToneMapping;
+render.outputColorSpace = THREE.SRGBColorSpace;
+const ACENTO = 0xA9C7C4, angosta = () => innerWidth <= 900;
+const mezcla = (a,b,t) => a+(b-a)*t, tope = (x,a=0,b=1) => Math.min(b,Math.max(a,x)), suave = t => t*t*(3-2*t);
+
+const c = document.createElement("canvas"); c.width = c.height = 64;
+const x2 = c.getContext("2d"), gr = x2.createRadialGradient(32,32,0,32,32,32);
+gr.addColorStop(0,"#fff"); gr.addColorStop(.25,"#ffffffaa"); gr.addColorStop(1,"#ffffff00"); x2.fillStyle = gr; x2.fillRect(0,0,64,64);
+const texLuz = new THREE.CanvasTexture(c);
+function puntoLuz(color, tam) {
+  const s = new THREE.Sprite(new THREE.SpriteMaterial({ map:texLuz, color, transparent:true, blending:THREE.AdditiveBlending, depthWrite:false }));
+  s.scale.setScalar(tam); return s;
+}
+
+const escena = new THREE.Scene();
+const camara = new THREE.PerspectiveCamera(34, 1, .1, 200);
+const R = 10, grupo = new THREE.Group(), rutas = new THREE.Group(); escena.add(grupo); grupo.add(rutas);
+const aV = (lat, lon, r=R) => { const f=(90-lat)*Math.PI/180, l=(lon+180)*Math.PI/180;
+  return new THREE.Vector3(-r*Math.sin(f)*Math.cos(l), r*Math.cos(f), r*Math.sin(f)*Math.sin(l)); };
+const esfera = new THREE.Mesh(new THREE.SphereGeometry(R*.992,64,64), new THREE.MeshStandardMaterial({ color:0x1a2a28, roughness:.8, transparent:true }));
+grupo.add(esfera);
+const halo = puntoLuz(ACENTO, R*3.05); halo.material.opacity=.3; escena.add(halo);
+const luz = new THREE.DirectionalLight(0xdbe9ec, 2); luz.position.set(-10,8,14); escena.add(luz);
+escena.add(new THREE.HemisphereLight(0x33413f,0x060908,1));
+{ const n=700, p=new Float32Array(n*3);
+  for (let i=0;i<n;i++) { new THREE.Vector3().randomDirection().multiplyScalar(90).toArray(p,i*3); p[i*3+2]=-Math.abs(p[i*3+2])-20; }
+  const g=new THREE.BufferGeometry(); g.setAttribute("position",new THREE.BufferAttribute(p,3));
+  escena.add(new THREE.Points(g,new THREE.PointsMaterial({ color:0xcfdcda,size:.5,transparent:true,opacity:.65 }))); }
+
+// rutas: luces que salen de Argentina y Chile y otras que vuelven
+const ORI = { mdz:[-32.9,-68.8], val:[-33,-71.6] };
+const dest = [[51.9,4.5],[25.8,-80.2],[-23.9,-46.3],[33.7,-118.3],[6.4,3.4],[40.7,-74],[35.7,139.7],[31.2,121.5]];
+const puntos = [], lineas = [];
+dest.forEach(([la,lo],k) => {
+  const o=k%2?ORI.val:ORI.mdz, a=aV(o[0],o[1]), b=aV(la,lo), ang=a.angleTo(b);
+  const m=a.clone().add(b).normalize().multiplyScalar(R+1.3+ang*2.6);
+  const cur=new THREE.QuadraticBezierCurve3(a,m,b);
+  const linea=new THREE.Mesh(new THREE.TubeGeometry(cur,80,.022,5), new THREE.MeshBasicMaterial({ color:0xD5E8E3, transparent:true, opacity:.38 }));
+  rutas.add(linea); lineas.push(linea);
+  const fin=puntoLuz(ACENTO,.5); fin.position.copy(b.clone().multiplyScalar(1.02)); rutas.add(fin); puntos.push({ s:fin, fijo:true });
+  for (let j=0;j<4;j++) { const sale=j%2===0, s=puntoLuz(sale?0xffffff:0x9FEBD8,.58); rutas.add(s);
+    puntos.push({ s, cur, sale, fase:j/4+k*.17, vel:.13/(.6+ang*.45) }); }
+});
+const orig=puntoLuz(0xffffff,1.2); orig.position.copy(aV(-33,-70,R*1.02)); rutas.add(orig); puntos.push({ s:orig, fijo:true });
+
+// ------------------------------------------------- los vehículos, hechos de puntos
+const caja=(w,h,d,x,y,z)=>new THREE.BoxGeometry(w,h,d).translate(x,y,z);
+const cil=(r,l,x,y,z,eje="x")=>{ const g=new THREE.CylinderGeometry(r,r,l,18); return (eje==="x"?g.rotateZ(Math.PI/2):g.rotateX(Math.PI/2)).translate(x,y,z); };
+const forma=(pts,prof)=>{ const s=new THREE.Shape(pts.map(p=>new THREE.Vector2(p[0],p[1])));
+  return new THREE.ExtrudeGeometry(s,{ depth:prof, bevelEnabled:false }).translate(0,0,-prof/2); };
+function avion() {
+  const perfil=[[0,-9.6],[.55,-9.2],[1.05,-8.2],[1.32,-6.8],[1.38,-3],[1.38,3.5],[1.2,6],[.75,8.2],[.2,9.9],[0,10]].map(p=>new THREE.Vector2(p[0],p[1]));
+  const cuerpo=new THREE.LatheGeometry(perfil,10).rotateZ(Math.PI/2);          // nariz hacia +x
+  const ala=s=>forma([[2.8,0],[-1.6,0],[-6.2,10.6*s],[-4.7,10.6*s]],.2).rotateX(Math.PI/2).translate(0,-.45,0);
+  const tim=s=>forma([[-6.6,0],[-8.6,0],[-10.3,3.7*s],[-9.5,3.7*s]],.14).rotateX(Math.PI/2).translate(0,.25,0);
+  const deriva=forma([[-6.4,1],[-8.6,1],[-10.2,4.7],[-9.2,4.7]],.16);
+  return [cuerpo,ala(1),ala(-1),tim(1),tim(-1),deriva,cil(.62,2.7,.9,-1.05,4.1),cil(.62,2.7,.9,-1.05,-4.1)];
+}
+function barco() {
+  const casco=forma([[-10.4,-2],[7,-2],[10.8,0],[7,2],[-10.4,2]],2.4).rotateX(Math.PI/2).translate(0,-.9,0);
+  const p=[casco, caja(2.5,3.8,3.7,-8.2,2.2,0), caja(3.2,.3,4.4,-8.2,3.8,0), caja(.9,1.6,.9,-9,4.9,0)];
+  for (let col=0;col<9;col++) { const alto=col>6?1.8:col>0?2.7:2.2;
+    p.push(caja(1.42,alto,3.5,-5.6+col*1.55,.3+alto/2,0)); }
+  return p;
+}
+function camion() {
+  const cab=forma([[4.6,1.2],[8.2,1.2],[8.4,2.9],[7.6,3.3],[7,4.9],[4.6,5]],2.6);
+  const p=[caja(12.6,3.4,2.6,-3.2,3.3,0), caja(15.4,.34,1.9,-.2,1.3,0), cab, caja(.08,1.2,1.5,7.5,4,0), cil(.42,1.8,3.4,1.5,1.2)];
+  for (const x of [-8,-6.3,-4.6,1.2,6.9]) for (const z of [1.15,-1.15]) p.push(cil(.76,.5,x,.76,z,"z"));
+  return p;
+}
+function muestrear(partes, n) {
+  const tri=[], ari=[]; let areas=0, largo=0; const acT=[], acA=[];
+  const a=new THREE.Vector3(), b=new THREE.Vector3(), d=new THREE.Vector3();
+  for (const g0 of partes) {
+    const g=g0.index?g0.toNonIndexed():g0, p=g.attributes.position.array;
+    for (let i=0;i<p.length;i+=9) { a.set(p[i+3]-p[i],p[i+4]-p[i+1],p[i+5]-p[i+2]); b.set(p[i+6]-p[i],p[i+7]-p[i+1],p[i+8]-p[i+2]);
+      areas+=a.cross(b).length()/2; tri.push(p.slice(i,i+9)); acT.push(areas); }
+    const e=new THREE.EdgesGeometry(g0,28).attributes.position.array;
+    for (let i=0;i<e.length;i+=6) { d.set(e[i+3]-e[i],e[i+4]-e[i+1],e[i+5]-e[i+2]); largo+=d.length(); ari.push(e.slice(i,i+6)); acA.push(largo); }
+  }
+  const buscar=(ac,v)=>{ let lo=0,hi=ac.length-1; while(lo<hi){ const m=(lo+hi)>>1; if(ac[m]<v) lo=m+1; else hi=m; } return lo; };
+  const r=new Float32Array(n*3);
+  for (let i=0;i<n;i++) {
+    if (i%10<6) { const e=ari[buscar(acA,Math.random()*largo)], t=Math.random();
+      for (let k=0;k<3;k++) r[i*3+k]=e[k]+(e[k+3]-e[k])*t; }
+    else { const q=tri[buscar(acT,Math.random()*areas)]; let u=Math.random(), v=Math.random(); if(u+v>1){u=1-u;v=1-v;}
+      for (let k=0;k<3;k++) r[i*3+k]=q[k]+(q[k+3]-q[k])*u+(q[k+6]-q[k])*v; }
+  }
+  for (let i=n-1;i>0;i--) { const j=Math.floor(Math.random()*(i+1)); for (let k=0;k<3;k++){ const t=r[i*3+k]; r[i*3+k]=r[j*3+k]; r[j*3+k]=t; } }
+  return r;
+}
+function centrar(arr, dy=0) { let cx=0,cy=0; const n=arr.length/3;
+  let mx=1e9,Mx=-1e9,my=1e9,My=-1e9;
+  for (let i=0;i<n;i++){ mx=Math.min(mx,arr[i*3]);Mx=Math.max(Mx,arr[i*3]);my=Math.min(my,arr[i*3+1]);My=Math.max(My,arr[i*3+1]); }
+  cx=(mx+Mx)/2; cy=(my+My)/2+dy; for (let i=0;i<n;i++){ arr[i*3]-=cx; arr[i*3+1]-=cy; } return arr; }
+
+const T = window.TIERRA, N = 12000, nTierra = T.length/2;
+const fGlobo = new Float32Array(N*3);
+for (let i=0;i<N;i++) { const k=(i<nTierra?i:Math.floor(Math.random()*nTierra))*2; aV(T[k],T[k+1]).toArray(fGlobo,i*3); }
+const FORMAS = [fGlobo, centrar(muestrear(avion(),N)), centrar(muestrear(barco(),N)), centrar(muestrear(camion(),N))];
+const pos = fGlobo.slice(), retraso = new Float32Array(N), giroPunto = new Float32Array(N);
+for (let i=0;i<N;i++) { retraso[i]=Math.random(); giroPunto[i]=Math.random()-.5; }
+const gPuntos = new THREE.BufferGeometry(); gPuntos.setAttribute("position", new THREE.BufferAttribute(pos,3));
+const nube = new THREE.Points(gPuntos, new THREE.PointsMaterial({ color:0xE3F0EC, size:.13, sizeAttenuation:true }));
+nube.frustumCulled = false; grupo.add(nube);
+
+let hecho = "";
+function formar(de, a, t) {
+  const clave = de+"|"+a+"|"+t.toFixed(4); if (clave===hecho) return; hecho = clave;
+  const A=FORMAS[de], B=FORMAS[a];
+  if (t<=0 || t>=1) { pos.set(t<=0?A:B); gPuntos.attributes.position.needsUpdate=true; return; }
+  for (let i=0;i<N;i++) {
+    const e=suave(tope(t*1.4-retraso[i]*.4)), j=i*3, arco=Math.sin(e*Math.PI)*giroPunto[i]*7;
+    pos[j]=A[j]+(B[j]-A[j])*e; pos[j+1]=A[j+1]+(B[j+1]-A[j+1])*e+arco; pos[j+2]=A[j+2]+(B[j+2]-A[j+2])*e+arco*.6;
+  }
+  gPuntos.attributes.position.needsUpdate=true;
+}
+
+// ------------------------------------------------- girar el globo y bajar por la página
+const CASA = { y:-.62, x:-.34 };
+const giro = { y:CASA.y, x:CASA.x, vy:0, vx:0, tocado:false, ultimo:-1e6 };
+const v0=new THREE.Vector3(), w=new THREE.Vector3(), d=new THREE.Vector3();
+const radioPx = () => R/(camara.position.distanceTo(grupo.position)*Math.tan(camara.fov*Math.PI/360))*innerHeight/2;
+function sobreGlobo(px,py) { if (scrollY>30) return false; v0.copy(grupo.position).project(camara);
+  return Math.hypot(px-(v0.x*.5+.5)*innerWidth, py-(-v0.y*.5+.5)*innerHeight)<radioPx(); }
+
+const barra = document.querySelector(".barra"), secc = document.getElementById("transporte"), medios=[...document.querySelectorAll(".medio")], barras=[...document.querySelectorAll(".barra b")];
+const botones = document.querySelector(".portada .acciones");
+// la portada termina justo cuando los botones se van por arriba
+function finPortada() { return Math.max(1, botones.getBoundingClientRect().bottom + scrollY - nav.offsetHeight); }
+function avance(fin) { return tope((scrollY-fin)/(secc.offsetTop+secc.offsetHeight-innerHeight-fin)); }
+// tramos después de la portada: [desde, hasta, forma de origen, forma de destino]
+const TRAMOS=[[0,.24,1,1],[.24,.4,1,2],[.4,.6,2,2],[.6,.76,2,3],[.76,1,3,3]];
+const VENTANAS=[[0,.05,.2,.26],[.33,.4,.58,.64],[.7,.78,1.01,1.02]];
+
+function cuadro(ms) {
+  requestAnimationFrame(cuadro);
+  nav.classList.toggle("pegado", scrollY>60);
+  const finSec = secc.offsetTop+secc.offsetHeight;
+  if (scrollY>finSec) return;                               // el 3D quedó tapado: no se dibuja
+  const t=ms/1000, dt=Math.min(.05,t-tPrevio); tPrevio=t;
+  mxO+=(mx-mxO)*.04; myO+=(my-myO)*.04;
+  const ang=angosta(), fin=finPortada(), g=tope(scrollY/fin), p=avance(fin);
+  camara.position.set(ang?0:-10, ang?0:.5, ang?72:45); camara.lookAt(ang?0:-10, ang?0:.5, 0);
+  grupo.position.set(ang?0:.5, ang?9:0, 0); halo.position.copy(grupo.position); halo.position.z=-2;
+
+  if (!giro.tocado) {
+    giro.y+=giro.vy*dt; giro.x=tope(giro.x+giro.vx*dt,-1.25,1.25);
+    const f=Math.exp(-dt*1.8); giro.vy*=f; giro.vx*=f;
+    if (t-giro.ultimo>6 && !quieto) {                       // quieto un rato, vuelve a Argentina y Chile
+      const k=1-Math.exp(-dt*.8), meta=CASA.y+Math.sin(t*.12)*.3;
+      giro.y+=(((meta-giro.y+Math.PI)%(2*Math.PI)+2*Math.PI)%(2*Math.PI)-Math.PI)*k;
+      giro.x+=(CASA.x-giro.x)*k;
+    }
+  }
+  const sal=suave(g);                              // del globo a los vehículos
+  const vy=-.55+(quieto?0:Math.sin(t*.28)*.32)+mxO*.2, vx=.2+myO*.1;
+  grupo.rotation.set(mezcla(giro.x,vx,sal), mezcla(giro.y,vy,sal), 0);
+  grupo.updateMatrixWorld(true);
+
+  // las formas
+  if (g<1) formar(0,1,g);
+  else { const tr=TRAMOS.find(q=>p<=q[1])||TRAMOS[TRAMOS.length-1];
+    formar(tr[2],tr[3], tr[2]===tr[3]?1:tope((p-tr[0])/(tr[1]-tr[0]))); }
+  nube.material.size=mezcla(.13,.095,sal);
+
+  // el globo se va
+  const queda=1-tope(g/.4);
+  esfera.visible=queda>0; esfera.material.opacity=queda; rutas.visible=queda>0; halo.material.opacity=.3*(1-g*.75);
+  lineas.forEach(l=>l.material.opacity=.38*queda);
+  d.copy(camara.position).sub(grupo.position).normalize();
+  if (queda>0) for (const q of puntos) {
+    let alfa=1;
+    if (!q.fijo) { const f=quieto?(q.fase%1):((t*q.vel+q.fase)%1); q.cur.getPoint(q.sale?f:1-f,q.s.position); alfa=Math.min(1,Math.min(f,1-f)*9); }
+    w.copy(q.s.position).applyMatrix4(grupo.matrixWorld).sub(grupo.position);
+    const prof=w.dot(d); q.s.visible=!(prof<0&&w.addScaledVector(d,-prof).length()<R); q.s.material.opacity=alfa*queda;
+  }
+
+  // la etiqueta
+  v0.copy(orig.position).applyMatrix4(grupo.matrixWorld);
+  const frente=v0.clone().sub(grupo.position).normalize().dot(d);
+  v0.project(camara); const xp=v0.x*.5+.5, yp=-v0.y*.5+.5;
+  et1.style.left=xp*innerWidth+"px"; et1.style.top=yp*innerHeight+"px";
+  et1.style.opacity=(frente<.15||g>.02||scrollY>60||(ang?yp>.5:xp<.56))?0:1;
+
+  // los textos de cada medio
+  medios.forEach((m,i)=>{ const [a,b,c2,e]=VENTANAS[i], o=g<1?0:tope((p-a)/(b-a))*(1-tope((p-c2)/(e-c2)));
+    m.style.opacity=o; m.style.setProperty("--y",(1-o)*16+"px"); m.style.visibility=o>0?"visible":"hidden"; });
+  barra.style.opacity=g<1?0:1;
+  barras.forEach((b,i)=>{ const [a,,,e]=VENTANAS[i]; b.style.transform="scaleX("+tope((p-a)/(Math.min(e,1)-a))+")"; });
+
+  render.render(escena,camara);
+}
+let mx=0,my=0,mxO=0,myO=0,tPrevio=0,arrastrando=false,px=0,py=0,tMov=0;
+function medir() { render.setSize(innerWidth,innerHeight,false); camara.aspect=innerWidth/innerHeight; camara.updateProjectionMatrix(); }
+addEventListener("resize",medir);
+addEventListener("pointermove",e=>{
+  mx=e.clientX/innerWidth*2-1; my=e.clientY/innerHeight*2-1;
+  if (arrastrando) { const r=radioPx(), ahora=performance.now(), seg=Math.max(.008,(ahora-tMov)/1000), ry=(e.clientX-px)/r, rx=(e.clientY-py)/r;
+    giro.y+=ry; giro.x=tope(giro.x+rx,-1.25,1.25); giro.vy=giro.vy*.7+ry/seg*.3; giro.vx=giro.vx*.7+rx/seg*.3; px=e.clientX; py=e.clientY; tMov=ahora; }
+  else document.body.style.cursor=!e.target.closest("a,button,input,select,textarea,label,summary")&&sobreGlobo(e.clientX,e.clientY)?"grab":"";
+});
+addEventListener("pointerdown",e=>{
+  if (e.target.closest("a,button,input,select,textarea,label,summary")||!sobreGlobo(e.clientX,e.clientY)) return;
+  arrastrando=true; px=e.clientX; py=e.clientY; tMov=performance.now(); giro.tocado=true; giro.vy=giro.vx=0;
+  document.body.style.cursor="grabbing"; document.body.classList.add("arrastrando"); e.preventDefault();
+});
+const soltar=()=>{ if(!arrastrando) return; arrastrando=false; giro.tocado=false; giro.ultimo=performance.now()/1000;
+  document.body.style.cursor=""; document.body.classList.remove("arrastrando"); };
+addEventListener("pointerup",soltar); addEventListener("pointercancel",soltar);
+medir(); requestAnimationFrame(cuadro);
+</script>
+</body>
+</html>
