@@ -130,6 +130,13 @@ details p { color:var(--tinta2); padding:0 34px 22px 0; font-size:16px; }
 .chip input:focus-visible + span { outline:2px solid var(--tinta); outline-offset:2px; }
 .chip input:checked + span { background:var(--tinta); border-color:var(--tinta); color:var(--claro); }
 .chip input:checked + span small { color:var(--acento); }
+.chip input:disabled { cursor:not-allowed; }
+.chip input:disabled + span { background:#EEF1F0; border-color:#EEF1F0; color:#A9B3B0; text-decoration:line-through; }
+.chip input:disabled + span small { color:#B9C1BF; }
+.otro { display:flex; align-items:center; gap:12px; margin-top:4px; }
+.otro label { font-weight:500; color:var(--tinta2); white-space:nowrap; }
+.otro input { width:auto; padding:9px 12px; font-size:14px; }
+.otro input.elegido { border-color:var(--tinta); box-shadow:0 0 0 1px var(--tinta); }
 
 /* cotizar */
 .cotizar { display:grid; grid-template-columns:.8fr 1.2fr; gap:clamp(28px,6vw,90px); align-items:start; }
@@ -353,8 +360,10 @@ nav.abierto .menu-btn i:nth-child(3) { transform:translateY(-5.5px) rotate(-45de
         <div class="campo"><label for="rNombre">Nombre *</label><input id="rNombre" name="nombre" required autocomplete="given-name"></div>
         <div class="campo"><label for="rApellido">Apellido *</label><input id="rApellido" name="apellido" required autocomplete="family-name"></div>
         <div class="campo todo"><label for="rLugar">Ciudad y país *</label><input id="rLugar" name="ciudad_y_pais" required></div>
-        <div class="campo todo"><span class="etq">Día *</span><div class="chips dias" id="rDias"></div></div>
-        <div class="campo todo"><span class="etq"><span>Horario *</span> <span class="zona" data-t="zona"></span></span><div class="chips horas" id="rHoras"></div></div>
+        <div class="campo todo"><span class="etq">Día *</span><div class="chips dias" id="rDias"></div>
+          <div class="otro"><label for="rOtroDia">¿Otro día?</label><input id="rOtroDia" type="date"></div></div>
+        <div class="campo todo"><span class="etq"><span>Horario *</span> <span class="zona" data-t="zona"></span></span><div class="chips horas" id="rHoras"></div>
+          <div class="otro"><label for="rOtraHora">¿Otro horario?</label><input id="rOtraHora" type="time" step="900"></div></div>
         <div class="campo"><label for="rTel">Teléfono *</label><input id="rTel" name="telefono" type="tel" required autocomplete="tel"></div>
         <div class="campo"><label for="rCorreo">Correo electrónico *</label><input id="rCorreo" name="email" type="email" required autocomplete="email"></div>
         <div class="campo todo"><label for="rTema" data-t="temaL"></label><textarea id="rTema" name="tema" required></textarea></div>
@@ -373,7 +382,6 @@ nav.abierto .menu-btn i:nth-child(3) { transform:translateY(-5.5px) rotate(-45de
   <div class="ayuda">
     <a class="btn borde" href="#" data-wa="ayuda" data-t="ayuda" target="_blank" rel="noopener"></a>
     <a class="btn borde" href="#" data-wa="siniestro" target="_blank" rel="noopener">Denunciar un siniestro</a>
-    <a class="btn borde" href="#" data-wa="pago" target="_blank" rel="noopener">Pago en línea</a>
     <a class="btn borde" href="#cotizar" data-t="contactanos"></a>
   </div>
   <div class="pie">
@@ -408,7 +416,8 @@ const BASE = {
   paso3:"Te enviamos la propuesta", paso3P:"La revisas y, si te sirve, confirmas.",
   nosP:"Somos Multirisk SpA en Chile y World Logistic SA en Argentina, dos empresas con los mismos socios. Aseguramos las cargas que salen hacia el mundo y las que llegan, por mar, tierra y aire, de origen a destino final.",
   ayuda:"¿Necesitas ayuda?", contactanos:"Contáctanos",
-  wa:{ ayuda:"Hola, necesito ayuda.", siniestro:"Hola, quiero denunciar un siniestro.", pago:"Hola, quiero pagar mi seguro en línea." },
+  wa:{ ayuda:"Hola, necesito ayuda.", siniestro:"Hola, quiero denunciar un siniestro." },
+  sinTurno:"Elige un día y un horario.", ocupado:"Ese horario ya está tomado. Elige otro.",
   reuEnviado:"Recibimos tu pedido. Te escribimos para confirmar la reunión.", reuFallo:"No pudimos enviar tu pedido. Inténtalo de nuevo o escríbenos por WhatsApp.",
 };
 const PAISES = {
@@ -425,6 +434,7 @@ const PAISES = {
     reuP:"Contanos de qué querés hablar y qué día te queda cómodo. Te escribimos para confirmar el horario.",
     temaL:"¿De qué querés hablar? *", lugar:"Ej.: Mendoza, Argentina",
     reuFallo:"No pudimos enviar tu pedido. Intentá de nuevo o escribinos por WhatsApp.",
+    sinTurno:"Elegí un día y un horario.", ocupado:"Ese horario ya está tomado. Elegí otro.",
     zona:"hora de Argentina", paso1:"Completá tus datos", paso1P:"Contanos qué transportás y por dónde.",
     paso3:"Te mandamos la propuesta", paso3P:"La revisás y, si te sirve, confirmás.",
     ayuda:"¿Necesitás ayuda?", contactanos:"Contactanos" },
@@ -513,31 +523,73 @@ botonWa.addEventListener("click", () => {
 
 // pedido de reunión: llega al mismo mail, con su propio asunto
 const formReu = document.getElementById("formReunion"), botonReu = document.getElementById("enviarReunion"), avisoReu = document.getElementById("avisoReunion");
+// La hoja de Google donde quedan las reuniones pedidas (google-apps-script/reservas.gs).
+// Vacía, el formulario anda igual pero no sabe qué horarios ya están tomados.
+const RESERVAS_URL = "";
 // los próximos diez días hábiles, desde mañana, y los horarios de atención
 const HORARIOS = ["09:00","10:00","11:00","12:00","14:00","15:00","16:00","17:00"];
+const iso = d => d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0");
+const fmt = o => new Intl.DateTimeFormat("es-AR", o);
+const otroDia = document.getElementById("rOtroDia"), otraHora = document.getElementById("rOtraHora");
 { const dias = [], d = new Date(); d.setHours(12,0,0,0);
   while (dias.length < 10) { d.setDate(d.getDate()+1); if (d.getDay()%6) dias.push(new Date(d)); }
-  const f = (o) => new Intl.DateTimeFormat("es-AR", o);
-  document.getElementById("rDias").innerHTML = dias.map((x,i) =>
-    '<label class="chip"><input type="radio" name="fecha_de_reunion" required value="' + f({ weekday:"long", day:"numeric", month:"numeric", year:"numeric" }).format(x) + '">' +
-    '<span><small>' + f({ weekday:"short" }).format(x).replace(".","") + '</small>' + x.getDate() + '<small>' + f({ month:"short" }).format(x).replace(".","") + '</small></span></label>').join("");
+  document.getElementById("rDias").innerHTML = dias.map(x =>
+    '<label class="chip"><input type="radio" name="dia" value="' + iso(x) + '">' +
+    '<span><small>' + fmt({ weekday:"short" }).format(x).replace(".","") + '</small>' + x.getDate() + '<small>' + fmt({ month:"short" }).format(x).replace(".","") + '</small></span></label>').join("");
   document.getElementById("rHoras").innerHTML = HORARIOS.map(h =>
-    '<label class="chip"><input type="radio" name="horario" required value="' + h + '"><span>' + h + '</span></label>').join(""); }
+    '<label class="chip"><input type="radio" name="hora" value="' + h + '"><span>' + h + '</span></label>').join("");
+  otroDia.min = iso(new Date(Date.now() + 864e5)); }
+
+// un día de la grilla o uno escrito a mano, nunca los dos
+let ocupados = new Set();
+const radio = n => formReu.querySelector('input[name="' + n + '"]:checked');
+const diaElegido = () => radio("dia")?.value || otroDia.value;
+const horaElegida = () => radio("hora")?.value || otraHora.value;
+function pintarTurnos() {
+  const dia = diaElegido();
+  formReu.querySelectorAll('input[name="hora"]').forEach(h => { h.disabled = ocupados.has(dia + " " + h.value); if (h.disabled) h.checked = false; });
+  formReu.querySelectorAll('input[name="dia"]').forEach(d => { d.disabled = HORARIOS.every(h => ocupados.has(d.value + " " + h)); if (d.disabled) d.checked = false; });
+  otroDia.classList.toggle("elegido", !!otroDia.value);
+  otraHora.classList.toggle("elegido", !!otraHora.value);
+}
+formReu.addEventListener("change", e => {
+  if (e.target.name === "dia") otroDia.value = "";
+  if (e.target === otroDia) formReu.querySelectorAll('input[name="dia"]').forEach(d => d.checked = false);
+  if (e.target.name === "hora") otraHora.value = "";
+  if (e.target === otraHora) formReu.querySelectorAll('input[name="hora"]').forEach(h => h.checked = false);
+  pintarTurnos();
+});
+if (RESERVAS_URL) fetch(RESERVAS_URL).then(r => r.json()).then(j => { ocupados = new Set(j.ocupados); pintarTurnos(); }).catch(() => {});
+
 formReu.addEventListener("submit", async e => {
   e.preventDefault();
   const T = PAISES[pais], decirReu = t => { avisoReu.textContent = t; avisoReu.classList.add("ver"); };
+  const dia = diaElegido(), hora = horaElegida();
   if (!formReu.checkValidity()) { decirReu(T.faltan); formReu.reportValidity(); return; }
+  if (!dia || !hora) { decirReu(T.sinTurno); return; }
+  if (ocupados.has(dia + " " + hora)) { decirReu(T.ocupado); pintarTurnos(); return; }
   const datos = new FormData(formReu);
-  datos.set("horario", datos.get("horario") + " (" + T.zona + ")");
+  datos.delete("dia"); datos.delete("hora");
+  datos.set("fecha_de_reunion", fmt({ weekday:"long", day:"numeric", month:"numeric", year:"numeric" }).format(new Date(dia + "T12:00")));
+  datos.set("horario", hora + " (" + T.zona + ")");
   datos.append("empresa_del_grupo", T.marca);
   datos.append("_subject", "Pedido de reunión · " + T.marca + " · " + datos.get("nombre") + " " + datos.get("apellido"));
   const original = botonReu.textContent;
   botonReu.disabled = true; botonReu.textContent = T.enviando;
   try {
+    // primero se reserva el horario; si alguien lo tomó recién, no se manda nada
+    if (RESERVAS_URL) {
+      const pedido = { fecha:dia, hora, zona:T.zona, empresa:T.marca };
+      ["nombre","apellido","ciudad_y_pais","telefono","email","tema"].forEach(k => pedido[k] = datos.get(k));
+      const res = await fetch(RESERVAS_URL, { method:"POST", body:JSON.stringify(pedido), headers:{ "Content-Type":"text/plain" } })
+        .then(r => r.json()).catch(() => ({ ok:true }));    // si la hoja no contesta, el pedido igual llega por mail
+      if (!res.ok) { ocupados.add(dia + " " + hora); pintarTurnos(); throw new Error("ocupado"); }
+    }
     const r = await fetch(formReu.action, { method:"POST", body:datos, headers:{ Accept:"application/json" } });
     if (!r.ok) throw new Error(r.status);
-    decirReu(T.reuEnviado); formReu.reset();
-  } catch (err) { decirReu(T.reuFallo); }
+    ocupados.add(dia + " " + hora);
+    decirReu(T.reuEnviado); formReu.reset(); pintarTurnos();
+  } catch (err) { decirReu(err.message === "ocupado" ? T.ocupado : T.reuFallo); }
   botonReu.disabled = false; botonReu.textContent = original;
 });
 
