@@ -471,7 +471,7 @@ function pintarPais() {
   document.getElementById("avisoReunion").classList.remove("ver");
   document.getElementById("faq").innerHTML = FAQ[pais].map(([q,r],i) => "<details"+(i?"":" open")+"><summary>"+q+"</summary><p>"+r+"</p></details>").join("");
 }
-document.querySelectorAll("[data-pais]").forEach(b => b.onclick = () => { pais=b.dataset.pais; pintarPais(); });
+document.querySelectorAll("[data-pais]").forEach(b => b.onclick = () => { pais=b.dataset.pais; pintarPais(); cargarTurnos(); });
 const menuBtn = document.getElementById("menuBtn");
 const abrirMenu = si => { document.getElementById("nav").classList.toggle("abierto", si); menuBtn.setAttribute("aria-expanded", si); };
 menuBtn.onclick = () => abrirMenu(!document.getElementById("nav").classList.contains("abierto"));
@@ -559,7 +559,13 @@ formReu.addEventListener("change", e => {
   if (e.target === otraHora) formReu.querySelectorAll('input[name="hora"]').forEach(h => h.checked = false);
   pintarTurnos();
 });
-if (RESERVAS_URL) fetch(RESERVAS_URL).then(r => r.json()).then(j => { ocupados = new Set(j.ocupados); pintarTurnos(); }).catch(() => {});
+// cada país tiene su agenda: lo tomado en Chile está libre en Argentina
+function cargarTurnos() {
+  const de = pais; ocupados = new Set(); pintarTurnos();
+  if (RESERVAS_URL) fetch(RESERVAS_URL + "?pais=" + de).then(r => r.json())
+    .then(j => { if (de === pais) { ocupados = new Set(j.ocupados); pintarTurnos(); } }).catch(() => {});
+}
+cargarTurnos();
 
 formReu.addEventListener("submit", async e => {
   e.preventDefault();
@@ -579,7 +585,7 @@ formReu.addEventListener("submit", async e => {
   try {
     // primero se reserva el horario; si alguien lo tomó recién, no se manda nada
     if (RESERVAS_URL) {
-      const pedido = { fecha:dia, hora, zona:T.zona, empresa:T.marca };
+      const pedido = { pais, fecha:dia, hora, zona:T.zona, empresa:T.marca };
       ["nombre","apellido","ciudad_y_pais","telefono","email","tema"].forEach(k => pedido[k] = datos.get(k));
       const res = await fetch(RESERVAS_URL, { method:"POST", body:JSON.stringify(pedido), headers:{ "Content-Type":"text/plain" } })
         .then(r => r.json()).catch(() => ({ ok:true }));    // si la hoja no contesta, el pedido igual llega por mail
