@@ -32,7 +32,8 @@ nav.pegado { background:#0B1110e6; backdrop-filter:blur(10px); padding-top:14px;
 .pais button.activo { background:var(--texto); color:var(--fondo); }
 .pais button { display:inline-flex; align-items:center; gap:7px; }
 .bandera { width:18px; height:12px; border-radius:2px; box-shadow:0 0 0 1px #ffffff33; flex-shrink:0; }
-.nav-der { display:flex; align-items:center; gap:22px; }
+.nav-der { display:flex; align-items:center; gap:28px; }
+.nav-links { display:flex; gap:24px; }
 .nav-link { font-size:14px; font-weight:500; color:var(--suave); text-decoration:none; }
 .nav-link:hover { color:var(--texto); }
 
@@ -74,27 +75,28 @@ h1 em { font-style:normal; color:var(--acento); display:block; }
 .aparece { opacity:0; transform:translateY(22px); transition:opacity .7s, transform .7s; }
 .aparece.visto { opacity:1; transform:none; }
 
-/* respaldo */
+/* sobre nosotros */
 .blanco { background:#fff; color:var(--tinta); }
-.resp { display:grid; grid-template-columns:1fr 1fr; gap:clamp(28px,6vw,90px); align-items:center; }
-.resp .txt { color:var(--tinta2); font-size:18px; margin-top:18px; max-width:520px; }
-.rotulo { font-size:14px; font-weight:600; color:var(--tinta2); }
-.logos { display:grid; grid-template-columns:repeat(3,1fr); }
-.logos > * { display:flex; align-items:center; justify-content:center; min-height:104px; padding:10px 20px; border-left:1px solid var(--lineaC); border-top:1px solid var(--lineaC); }
-.logos > :nth-child(3n+1) { border-left:0; }
-.logos > :nth-child(-n+3) { border-top:0; }
-.logos .rotulo { justify-content:flex-start; padding-left:0; }
-.logos img { max-height:42px; max-width:100%; width:auto; object-fit:contain; filter:brightness(0); opacity:.55; transition:opacity .25s; }
-.logos img:hover { opacity:.85; }
-.numeros { display:grid; grid-template-columns:repeat(3,1fr); margin-top:clamp(52px,9vh,88px); border-top:1px solid var(--lineaC); padding-top:clamp(30px,5vh,48px); }
-.numeros > div + div { border-left:1px solid var(--lineaC); padding-left:clamp(18px,3vw,44px); }
+.nos-cab { display:grid; grid-template-columns:1fr 1fr; gap:clamp(28px,6vw,90px); align-items:end; }
+.nos-cab .kicker { color:var(--tinta2); margin-bottom:14px; }
+.nos-cab .txt { color:var(--tinta2); font-size:17px; max-width:540px; }
+.nos-cab .txt + .txt { margin-top:14px; }
+.numeros { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:clamp(48px,8vh,80px); }
+.numeros > div { background:var(--claro); border-radius:20px; padding:clamp(24px,3vw,40px); }
 .numeros strong { font-family:"Gloock",Georgia,serif; font-weight:400; font-size:clamp(46px,5.2vw,78px); line-height:1; color:var(--tinta); display:block; white-space:nowrap; font-variant-numeric:tabular-nums; }
-.numeros p { font-size:15px; color:var(--tinta2); margin-top:10px; max-width:190px; }
-.clientes-t { margin-top:clamp(52px,9vh,88px); font-size:16px; color:var(--tinta); }
-.cinta { overflow:hidden; margin-top:16px; border-top:1px solid var(--lineaC); border-bottom:1px solid var(--lineaC); padding:20px 0;
-  margin-left:calc(var(--lado) * -1); margin-right:calc(var(--lado) * -1); }
-.cinta div { display:flex; gap:56px; width:max-content; animation:corre 34s linear infinite; }
-.cinta span { font-family:"Gloock",Georgia,serif; font-size:24px; color:var(--tinta); white-space:nowrap; }
+.numeros p { font-size:15px; color:var(--tinta2); margin-top:12px; }
+.grupo { margin-top:clamp(56px,9vh,96px); }
+.separa { display:flex; align-items:center; gap:20px; font-size:12px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--tinta2); white-space:nowrap; }
+.separa::before, .separa::after { content:""; flex:1; height:1px; background:var(--lineaC); }
+.logos { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:28px 40px; margin-top:38px; padding:0 3%; }
+.logos img { height:40px; max-width:172px; width:auto; object-fit:contain; filter:brightness(0); opacity:.5; transition:opacity .25s; }
+.logos img:hover { opacity:.85; }
+.cinta { overflow:hidden; margin-top:34px; -webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent); mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent); }
+.cinta div { display:flex; width:max-content; animation:corre 40s linear infinite; }
+.cinta:hover div { animation-play-state:paused; }
+.cinta span { font-family:"Gloock",Georgia,serif; font-size:clamp(24px,2.5vw,36px); color:var(--tinta); white-space:nowrap;
+  display:inline-flex; align-items:center; gap:clamp(28px,3.4vw,54px); padding-right:clamp(28px,3.4vw,54px); }
+.cinta span::after { content:""; width:7px; height:7px; border-radius:50%; background:#8FB3AF; }
 @keyframes corre { to { transform:translateX(-50%); } }
 
 /* preguntas */
@@ -113,10 +115,31 @@ details p { color:var(--tinta2); padding:0 34px 22px 0; font-size:16px; }
 #reunion .txt { color:var(--tinta2); }
 #reunion form { background:#fff; border:1px solid var(--lineaC); }
 #reunion .envios { grid-template-columns:1fr; }
+.etq { font-size:13px; font-weight:600; }
+.zona { font-weight:400; color:var(--tinta2); }
+.zona::before { content:"· "; }
+.chips { display:grid; gap:8px; }
+.chips.dias { grid-template-columns:repeat(5,1fr); }
+.chips.horas { grid-template-columns:repeat(4,1fr); }
+.chip { position:relative; }
+.chip input { position:absolute; opacity:0; width:100%; height:100%; inset:0; margin:0; cursor:pointer; }
+.chip span { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px; min-height:46px; padding:8px 4px;
+  border:1px solid var(--lineaC); border-radius:10px; background:#fff; font-size:15px; font-weight:600; text-align:center; transition:background .15s, border-color .15s; }
+.chip small { font-size:11px; font-weight:500; color:var(--tinta2); text-transform:capitalize; }
+.chip input:hover + span { border-color:var(--tinta); }
+.chip input:focus-visible + span { outline:2px solid var(--tinta); outline-offset:2px; }
+.chip input:checked + span { background:var(--tinta); border-color:var(--tinta); color:var(--claro); }
+.chip input:checked + span small { color:var(--acento); }
 
 /* cotizar */
 .cotizar { display:grid; grid-template-columns:.8fr 1.2fr; gap:clamp(28px,6vw,90px); align-items:start; }
 .cotizar .txt { color:var(--suave); font-size:18px; margin-top:16px; }
+.cotizar .kicker { margin-bottom:14px; }
+.pasos { list-style:none; counter-reset:paso; margin-top:34px; border-top:1px solid var(--linea); }
+.pasos li { counter-increment:paso; display:grid; grid-template-columns:44px 1fr; padding:16px 0; border-bottom:1px solid var(--linea); }
+.pasos li::before { content:counter(paso); grid-row:span 2; font-family:"Gloock",Georgia,serif; font-size:26px; line-height:1; color:var(--acento); }
+.pasos b { font-weight:600; font-size:16px; }
+.pasos span { color:var(--suave); font-size:15px; }
 form { background:var(--claro); color:var(--tinta); border-radius:20px; padding:clamp(22px,3vw,38px); }
 .campos { display:grid; grid-template-columns:1fr 1fr; gap:16px 18px; }
 .campo { display:flex; flex-direction:column; gap:6px; min-width:0; }
@@ -136,31 +159,51 @@ textarea { resize:none; min-height:104px; }
 .btn:disabled { opacity:.6; cursor:default; }
 
 footer { position:relative; z-index:3; background:var(--fondo); border-top:1px solid var(--linea); padding:44px var(--lado) 30px; color:var(--suave); font-size:14px; }
+.ayuda { display:flex; flex-wrap:wrap; gap:10px; padding-bottom:36px; margin-bottom:36px; border-bottom:1px solid var(--linea); }
+.ayuda .btn { padding:11px 20px; font-size:14px; }
 .pie { display:flex; flex-wrap:wrap; justify-content:space-between; gap:24px; }
 .pie .marca { display:block; margin-bottom:8px; }
 .legal { font-size:12px; color:#8A9794; margin-top:26px; max-width:960px; }
 
+.menu-btn { display:none; flex-direction:column; justify-content:center; gap:4px; width:40px; height:40px; padding:0 11px; border:1px solid var(--linea); border-radius:50%; background:none; cursor:pointer; }
+.menu-btn i { display:block; height:1.5px; background:var(--texto); transition:transform .25s, opacity .25s; }
+nav.abierto .menu-btn i:nth-child(1) { transform:translateY(5.5px) rotate(45deg); }
+nav.abierto .menu-btn i:nth-child(2) { opacity:0; }
+nav.abierto .menu-btn i:nth-child(3) { transform:translateY(-5.5px) rotate(-45deg); }
+@media (max-width:1100px) {
+  .menu-btn { display:flex; }
+  .nav-der { gap:12px; }
+  .nav-links { display:none; position:absolute; top:100%; left:0; right:0; flex-direction:column; gap:0;
+    background:#0B1110f7; backdrop-filter:blur(10px); padding:4px var(--lado) 14px; border-bottom:1px solid var(--linea); }
+  nav.abierto { background:#0B1110f7; }
+  nav.abierto .nav-links { display:flex; }
+  .nav-links .nav-link { padding:15px 0; font-size:17px; color:var(--texto); border-bottom:1px solid var(--linea); }
+  .nav-links .nav-link:last-child { border-bottom:0; }
+}
+@media (max-width:520px) { .sigla { display:none; } .pais button { padding:7px 10px; } .marca { font-size:21px; } }
 @media (max-width:900px) {
   .velo { background:linear-gradient(0deg, #0B1110f7 0%, #0B1110d9 44%, #0B111000 74%); }
   nav { padding:18px 20px; }
   .portada { padding-bottom:40px; }
   h1 { font-size:clamp(38px,11vw,52px); }
   .bajada { margin-top:14px; font-size:15px; }
-  .nav-link { display:none; }
-  .numeros strong { font-size:40px; }
-  .numeros p { font-size:13px; max-width:100px; }
-  .numeros > div + div { padding-left:14px; }
-  .logos { grid-template-columns:1fr 1fr; }
-  .logos > * { border:0 !important; min-height:70px; }
-  .logos .rotulo { grid-column:1/-1; min-height:0; padding-bottom:4px; }
+  .nos-cab { grid-template-columns:1fr; gap:20px; }
+  .numeros { grid-template-columns:1fr; gap:10px; }
+  .numeros > div { display:flex; align-items:center; gap:18px; padding:20px 22px; }
+  .numeros strong { font-size:42px; min-width:120px; }
+  .numeros p { margin-top:0; }
+  .separa { font-size:11px; gap:14px; white-space:normal; text-align:center; }
+  .logos { justify-content:center; gap:26px 34px; padding:0; }
+  .logos img { height:30px; max-width:130px; }
   .acciones { margin-top:20px; }
   .btn { padding:13px 20px; font-size:14px; }
   .medio { top:auto; bottom:84px; --c:0%; }
-  .preguntas, .cotizar, .resp { grid-template-columns:1fr; }
+  .preguntas, .cotizar { grid-template-columns:1fr; }
   .campos { grid-template-columns:1fr; }
   .envios { grid-template-columns:1fr; }
 }
 @media (prefers-reduced-motion: reduce) {
+  .cinta { overflow-x:auto; }
   html { scroll-behavior:auto; }
   .aparece { opacity:1; transform:none; transition:none; }
   .cinta div { animation:none; }
@@ -174,10 +217,16 @@ footer { position:relative; z-index:3; background:var(--fondo); border-top:1px s
 <nav id="nav">
   <a class="marca" href="#inicio" data-t="marca"></a>
   <div class="nav-der">
-    <a class="nav-link" href="#reunion" data-t="agendar"></a>
-    <div class="pais" role="group" aria-label="País">
-      <button data-pais="ar"><svg class="bandera" viewBox="0 0 18 12" aria-hidden="true"><rect width="18" height="12" fill="#74ACDF"/><rect y="4" width="18" height="4" fill="#fff"/><circle cx="9" cy="6" r="1.4" fill="#F6B40E"/></svg>AR</button><button data-pais="cl" class="activo"><svg class="bandera" viewBox="0 0 18 12" aria-hidden="true"><rect width="18" height="12" fill="#fff"/><rect y="6" width="18" height="6" fill="#D52B1E"/><rect width="6" height="6" fill="#0039A6"/><polygon points="3,1.3 3.38,2.47 4.62,2.48 3.62,3.2 4,4.38 3,3.65 2,4.38 2.38,3.2 1.38,2.48 2.62,2.47" fill="#fff"/></svg>CL</button>
+    <div class="nav-links">
+      <a class="nav-link" href="#inicio">Inicio</a>
+      <a class="nav-link" href="#nosotros">Sobre nosotros</a>
+      <a class="nav-link" href="#reunion" data-t="agendarMenu"></a>
+      <a class="nav-link" href="#cotizar">Contacto</a>
     </div>
+    <div class="pais" role="group" aria-label="País">
+      <button data-pais="ar" aria-label="Argentina"><svg class="bandera" viewBox="0 0 18 12" aria-hidden="true"><rect width="18" height="12" fill="#74ACDF"/><rect y="4" width="18" height="4" fill="#fff"/><circle cx="9" cy="6" r="1.4" fill="#F6B40E"/></svg><span class="sigla">AR</span></button><button data-pais="cl" class="activo" aria-label="Chile"><svg class="bandera" viewBox="0 0 18 12" aria-hidden="true"><rect width="18" height="12" fill="#fff"/><rect y="6" width="18" height="6" fill="#D52B1E"/><rect width="6" height="6" fill="#0039A6"/><polygon points="3,1.3 3.38,2.47 4.62,2.48 3.62,3.2 4,4.38 3,3.65 2,4.38 2.38,3.2 1.38,2.48 2.62,2.47" fill="#fff"/></svg><span class="sigla">CL</span></button>
+    </div>
+    <button class="menu-btn" id="menuBtn" aria-label="Menú" aria-expanded="false"><i></i><i></i><i></i></button>
   </div>
 </nav>
 
@@ -195,88 +244,35 @@ footer { position:relative; z-index:3; background:var(--fondo); border-top:1px s
 <div class="etiqueta" id="et1">Argentina y Chile</div>
 
 <section class="transporte" id="transporte" aria-label="Medios de transporte">
-      <div class="medio" data-medio="0">
-      <p class="num">01 · Por aire</p>
-      <h2 data-t="aireT"></h2>
-      <p class="txt" data-t="aireP"></p>
-    </div>
-    <div class="medio" data-medio="1">
-      <p class="num">02 · Por mar</p>
+    <div class="medio" data-medio="0">
+      <p class="num">01 · Marítimo</p>
       <h2 data-t="marT"></h2>
       <p class="txt" data-t="marP"></p>
     </div>
-    <div class="medio" data-medio="2">
-      <p class="num">03 · Por tierra</p>
+    <div class="medio" data-medio="1">
+      <p class="num">02 · Terrestre</p>
       <h2 data-t="tierraT"></h2>
       <p class="txt" data-t="tierraP"></p>
     </div>
+    <div class="medio" data-medio="2">
+      <p class="num">03 · Aéreo</p>
+      <h2 data-t="aireT"></h2>
+      <p class="txt" data-t="aireP"></p>
+    </div>
     <div class="barra" aria-hidden="true"><i><b></b></i><i><b></b></i><i><b></b></i></div>
-</section>
-
-<section class="bloque blanco" id="respaldo">
-  <div class="ancho">
-    <div class="resp">
-      <div class="aparece">
-        <h2 data-t="respT"></h2>
-        <p class="txt" data-t="respP"></p>
-      </div>
-      <div class="logos" aria-label="Aseguradoras">
-        <p class="rotulo">Aseguradoras con las que trabajamos</p>
-        <div><img src="logos/sancor.png" alt="Sancor Seguros"></div>
-        <div><img src="logos/chubb.svg" alt="Chubb"></div>
-        <div><img src="logos/integrity.png" alt="Integrity Seguros"></div>
-        <div><img src="logos/mercantil.png" alt="La Mercantil Andina"></div>
-        <div><img src="logos/everest.png" alt="Everest"></div>
-      </div>
-    </div>
-    <div class="numeros" id="numeros">
-      <div><strong><span data-cuenta="25" data-antes="+">0</span></strong><p>años de trayectoria</p></div>
-      <div><strong><span data-cuenta="5">0</span> min</strong><p>para emitir el certificado online</p></div>
-      <div><strong><span data-cuenta="5">0</span></strong><p>aseguradoras líderes</p></div>
-    </div>
-    <p class="rotulo clientes-t">Clientes que confían en nosotros</p>
-    <div class="cinta" aria-label="Clientes que confían en nosotros"><div id="cinta"></div></div>
-  </div>
-</section>
-
-<section class="bloque claro" id="preguntas">
-  <div class="ancho preguntas">
-    <h2 class="aparece">Preguntas frecuentes</h2>
-    <div id="faq"></div>
-  </div>
-</section>
-
-<section class="bloque claro" id="reunion">
-  <div class="ancho cotizar">
-    <div class="aparece">
-      <h2 data-t="reuT"></h2>
-      <p class="txt" data-t="reuP"></p>
-    </div>
-    <form id="formReunion" action="https://formspree.io/f/xgvnkrrb" method="POST" novalidate>
-      <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">
-      <div class="campos">
-        <div class="campo"><label for="rNombre">Nombre *</label><input id="rNombre" name="nombre" required autocomplete="given-name"></div>
-        <div class="campo"><label for="rApellido">Apellido *</label><input id="rApellido" name="apellido" required autocomplete="family-name"></div>
-        <div class="campo"><label for="rLugar">Ciudad y país *</label><input id="rLugar" name="ciudad_y_pais" required></div>
-        <div class="campo"><label for="rFecha">Fecha de la reunión *</label><input id="rFecha" name="fecha_de_reunion" type="date" required></div>
-        <div class="campo"><label for="rTel">Teléfono *</label><input id="rTel" name="telefono" type="tel" required autocomplete="tel"></div>
-        <div class="campo"><label for="rCorreo">Correo electrónico *</label><input id="rCorreo" name="email" type="email" required autocomplete="email"></div>
-        <div class="campo todo"><label for="rTema" data-t="temaL"></label><textarea id="rTema" name="tema" required></textarea></div>
-      </div>
-      <div class="pie-form">
-        <small data-t="autoriza"></small>
-        <div class="envios"><button class="btn tinta" type="submit" id="enviarReunion" data-t="agendar"></button></div>
-      </div>
-      <p class="aviso" id="avisoReunion" role="status"></p>
-    </form>
-  </div>
 </section>
 
 <section class="bloque oscuro" id="cotizar">
   <div class="ancho cotizar">
     <div class="aparece">
+      <p class="kicker">Formulario de cotización</p>
       <h2 data-t="cotT"></h2>
       <p class="txt" data-t="cotP"></p>
+      <ol class="pasos">
+        <li><b data-t="paso1"></b><span data-t="paso1P"></span></li>
+        <li><b>Comparamos opciones</b><span data-t="paso2P"></span></li>
+        <li><b data-t="paso3"></b><span data-t="paso3P"></span></li>
+      </ol>
     </div>
     <form id="formulario" action="https://formspree.io/f/xgvnkrrb" method="POST" novalidate>
       <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">
@@ -304,7 +300,82 @@ footer { position:relative; z-index:3; background:var(--fondo); border-top:1px s
   </div>
 </section>
 
+<section class="bloque blanco" id="nosotros">
+  <div class="ancho">
+    <div class="nos-cab aparece">
+      <div>
+        <p class="kicker">Sobre nosotros</p>
+        <h2>Dos países, un mismo equipo.</h2>
+      </div>
+      <div>
+        <p class="txt" data-t="nosP"></p>
+        <p class="txt" data-t="respP"></p>
+      </div>
+    </div>
+    <div class="numeros" id="numeros">
+      <div><strong><span data-cuenta="25" data-antes="+">0</span></strong><p>años de trayectoria</p></div>
+      <div><strong><span data-cuenta="5">0</span> min</strong><p>para emitir el certificado online</p></div>
+      <div><strong><span data-cuenta="5">0</span></strong><p>aseguradoras líderes</p></div>
+    </div>
+    <div class="grupo">
+      <p class="separa">Aseguradoras con las que trabajamos</p>
+      <div class="logos">
+        <img src="logos/sancor.png" alt="Sancor Seguros">
+        <img src="logos/chubb.svg" alt="Chubb">
+        <img src="logos/integrity.png" alt="Integrity Seguros">
+        <img src="logos/mercantil.png" alt="La Mercantil Andina">
+        <img src="logos/everest.png" alt="Everest">
+      </div>
+    </div>
+    <div class="grupo">
+      <p class="separa">Clientes que confían en nosotros</p>
+      <div class="cinta" aria-label="Clientes que confían en nosotros"><div id="cinta"></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="bloque claro" id="preguntas">
+  <div class="ancho preguntas">
+    <h2 class="aparece">Preguntas frecuentes</h2>
+    <div id="faq"></div>
+  </div>
+</section>
+
+<section class="bloque claro" id="reunion">
+  <div class="ancho cotizar">
+    <div class="aparece">
+      <h2 data-t="reuT"></h2>
+      <p class="txt" data-t="reuP"></p>
+    </div>
+    <form id="formReunion" action="https://formspree.io/f/xgvnkrrb" method="POST" novalidate>
+      <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">
+      <div class="campos">
+        <div class="campo"><label for="rNombre">Nombre *</label><input id="rNombre" name="nombre" required autocomplete="given-name"></div>
+        <div class="campo"><label for="rApellido">Apellido *</label><input id="rApellido" name="apellido" required autocomplete="family-name"></div>
+        <div class="campo todo"><label for="rLugar">Ciudad y país *</label><input id="rLugar" name="ciudad_y_pais" required></div>
+        <div class="campo todo"><span class="etq">Día *</span><div class="chips dias" id="rDias"></div></div>
+        <div class="campo todo"><span class="etq"><span>Horario *</span> <span class="zona" data-t="zona"></span></span><div class="chips horas" id="rHoras"></div></div>
+        <div class="campo"><label for="rTel">Teléfono *</label><input id="rTel" name="telefono" type="tel" required autocomplete="tel"></div>
+        <div class="campo"><label for="rCorreo">Correo electrónico *</label><input id="rCorreo" name="email" type="email" required autocomplete="email"></div>
+        <div class="campo todo"><label for="rTema" data-t="temaL"></label><textarea id="rTema" name="tema" required></textarea></div>
+      </div>
+      <div class="pie-form">
+        <small data-t="autoriza"></small>
+        <div class="envios"><button class="btn tinta" type="submit" id="enviarReunion" data-t="agendar"></button></div>
+      </div>
+      <p class="aviso" id="avisoReunion" role="status"></p>
+    </form>
+  </div>
+</section>
+
+
 <footer>
+  <div class="ayuda">
+    <a class="btn borde" href="#" data-wa="ayuda" data-t="ayuda" target="_blank" rel="noopener"></a>
+    <a class="btn borde" href="#" data-wa="siniestro" target="_blank" rel="noopener">Denunciar un siniestro</a>
+    <a class="btn borde" href="#" data-wa="pago" target="_blank" rel="noopener">Pago en línea</a>
+    <a class="btn borde" href="#cotizar" data-t="contactanos"></a>
+  </div>
   <div class="pie">
     <div><a class="marca" href="#inicio" data-t="marca"></a><span data-t="piePais"></span></div>
     <div><span data-t="pieContacto"></span><br><span data-t="pieRegistro"></span></div>
@@ -321,7 +392,7 @@ const BASE = {
   aireT:"Lo que no puede esperar.", aireP:"Carga aérea asegurada desde el retiro en origen hasta la entrega final.",
   marT:"De puerto a puerto, y más allá.", marP:"Exportaciones e importaciones por mar, con los tramos terrestres incluidos en el recorrido.",
   tierraT:"También cruzando la cordillera.", tierraP:"Rutas nacionales e internacionales, cada viaje con su certificado antes de que el camión salga.",
-  respT:"Si algo pasa, no gestionas el reclamo solo.", respP:"Te acompañamos en cada siniestro y lo gestionamos directamente con la aseguradora y los estudios liquidadores.",
+  respP:"Y si algo pasa, no gestionas el reclamo solo: te acompañamos en cada siniestro y lo llevamos directamente con la aseguradora y los estudios liquidadores.",
   cotT:"Cuéntanos qué necesitas transportar.", cotP:"Completa los datos de tu empresa y de la operación, y te contactamos para avanzar con la cotización. Sin compromiso.",
   idFiscal:"RUT de la empresa", seguroL:"Seguro que necesitas *", detalleL:"Cuéntanos un poco más sobre tu operación",
   autoriza:"Al enviar, autorizas a Multirisk SpA a usar estos datos para responder tu solicitud.",
@@ -331,22 +402,32 @@ const BASE = {
   agendar:"Agendar reunión", reuT:"¿Prefieres conversarlo? Agenda una reunión.",
   reuP:"Cuéntanos de qué quieres hablar y qué día te queda cómodo. Te escribimos para confirmar el horario.",
   temaL:"¿De qué quieres hablar? *", lugar:"Ej.: Santiago, Chile", temaPh:"Ej.: asegurar exportaciones por mar, revisar la póliza del transportista",
+  agendarMenu:"Agendar una reunión", zona:"hora de Chile",
+  paso1:"Completa tus datos", paso1P:"Cuéntanos qué transportas y por dónde.",
+  paso2P:"Cotizamos con las aseguradoras con las que trabajamos.",
+  paso3:"Te enviamos la propuesta", paso3P:"La revisas y, si te sirve, confirmas.",
+  nosP:"Somos Multirisk SpA en Chile y World Logistic SA en Argentina, dos empresas con los mismos socios. Aseguramos las cargas que salen hacia el mundo y las que llegan, por mar, tierra y aire, de origen a destino final.",
+  ayuda:"¿Necesitas ayuda?", contactanos:"Contáctanos",
+  wa:{ ayuda:"Hola, necesito ayuda.", siniestro:"Hola, quiero denunciar un siniestro.", pago:"Hola, quiero pagar mi seguro en línea." },
   reuEnviado:"Recibimos tu pedido. Te escribimos para confirmar la reunión.", reuFallo:"No pudimos enviar tu pedido. Inténtalo de nuevo o escríbenos por WhatsApp.",
 };
 const PAISES = {
   cl: BASE,
-  ar: { ...BASE, marca:"World Logistic", cotiza:"Cotizá tu carga",
-    respT:"Si algo pasa, no gestionás el reclamo solo.", respP:"Te acompañamos en cada siniestro y lo gestionamos directamente con la aseguradora y los estudios liquidadores.",
+  ar: { ...BASE, marca:"World Logistic SA", cotiza:"Cotizá tu carga",
+    respP:"Y si algo pasa, no gestionás el reclamo solo: te acompañamos en cada siniestro y lo llevamos directamente con la aseguradora y los estudios liquidadores.",
     cotT:"Contanos qué necesitás transportar.", cotP:"Completá los datos de tu empresa y de la operación, y te contactamos para avanzar con la cotización. Sin compromiso.",
     idFiscal:"CUIT de la empresa", seguroL:"Seguro que necesitás *", detalleL:"Contanos un poco más sobre tu operación",
-    autoriza:"Al enviar, autorizás a World Logistic a usar estos datos para responder tu solicitud.",
+    autoriza:"Al enviar, autorizás a World Logistic SA a usar estos datos para responder tu solicitud.",
     piePais:"Seguro de transporte de carga en Argentina", pieContacto:"[Correo de World Logistic] · WhatsApp 261 342 4839", pieRegistro:"[N.º de matrícula SSN]",
     tel:"+54 9 261 123 4567", mail:"nombre@empresa.com.ar", enviado:"Recibimos tu solicitud. Te contactamos a la brevedad.", fallo:"No pudimos enviar tu solicitud. Intentá de nuevo o mandala por WhatsApp.", abierto:"Se abrió WhatsApp con tus datos. Solo falta apretar enviar.", enviando:"Enviando…",
     faltan:"Revisá los campos obligatorios y el formato del correo.",
     reuT:"¿Preferís charlarlo? Agendá una reunión.",
     reuP:"Contanos de qué querés hablar y qué día te queda cómodo. Te escribimos para confirmar el horario.",
     temaL:"¿De qué querés hablar? *", lugar:"Ej.: Mendoza, Argentina",
-    reuFallo:"No pudimos enviar tu pedido. Intentá de nuevo o escribinos por WhatsApp." },
+    reuFallo:"No pudimos enviar tu pedido. Intentá de nuevo o escribinos por WhatsApp.",
+    zona:"hora de Argentina", paso1:"Completá tus datos", paso1P:"Contanos qué transportás y por dónde.",
+    paso3:"Te mandamos la propuesta", paso3P:"La revisás y, si te sirve, confirmás.",
+    ayuda:"¿Necesitás ayuda?", contactanos:"Contactanos" },
 };
 const FAQ = {
   cl: [["¿Qué cubre el seguro?","Depende de la póliza y de cada operación. Antes de emitir revisamos la mercadería, el trayecto y los riesgos cubiertos, para que sepas qué incluye y qué no."],
@@ -368,6 +449,7 @@ function pintarPais() {
   document.querySelectorAll("[data-t]").forEach(e => e.textContent = T[e.dataset.t]);
   document.querySelectorAll("[data-pais]").forEach(b => b.classList.toggle("activo", b.dataset.pais===pais));
   document.querySelectorAll("[data-whatsapp]").forEach(a => a.href = T.whatsapp);
+  document.querySelectorAll("[data-wa]").forEach(a => a.href = T.whatsapp + "?text=" + encodeURIComponent(T.wa[a.dataset.wa]));
   document.title = T.marca + " · Seguro de transporte de carga";
   document.getElementById("telefono").placeholder = T.tel;
   document.getElementById("correo").placeholder = T.mail;
@@ -380,6 +462,10 @@ function pintarPais() {
   document.getElementById("faq").innerHTML = FAQ[pais].map(([q,r],i) => "<details"+(i?"":" open")+"><summary>"+q+"</summary><p>"+r+"</p></details>").join("");
 }
 document.querySelectorAll("[data-pais]").forEach(b => b.onclick = () => { pais=b.dataset.pais; pintarPais(); });
+const menuBtn = document.getElementById("menuBtn");
+const abrirMenu = si => { document.getElementById("nav").classList.toggle("abierto", si); menuBtn.setAttribute("aria-expanded", si); };
+menuBtn.onclick = () => abrirMenu(!document.getElementById("nav").classList.contains("abierto"));
+document.querySelectorAll(".nav-link").forEach(a => a.addEventListener("click", () => abrirMenu(false)));
 document.getElementById("cinta").innerHTML = [...CLIENTES,...CLIENTES].map(c => "<span>"+c+"</span>").join("");
 pintarPais();
 
@@ -427,14 +513,22 @@ botonWa.addEventListener("click", () => {
 
 // pedido de reunión: llega al mismo mail, con su propio asunto
 const formReu = document.getElementById("formReunion"), botonReu = document.getElementById("enviarReunion"), avisoReu = document.getElementById("avisoReunion");
-const fecha = document.getElementById("rFecha");
-{ const hoy = new Date(); hoy.setMinutes(hoy.getMinutes() - hoy.getTimezoneOffset()); fecha.min = hoy.toISOString().slice(0,10); }
+// los próximos diez días hábiles, desde mañana, y los horarios de atención
+const HORARIOS = ["09:00","10:00","11:00","12:00","14:00","15:00","16:00","17:00"];
+{ const dias = [], d = new Date(); d.setHours(12,0,0,0);
+  while (dias.length < 10) { d.setDate(d.getDate()+1); if (d.getDay()%6) dias.push(new Date(d)); }
+  const f = (o) => new Intl.DateTimeFormat("es-AR", o);
+  document.getElementById("rDias").innerHTML = dias.map((x,i) =>
+    '<label class="chip"><input type="radio" name="fecha_de_reunion" required value="' + f({ weekday:"long", day:"numeric", month:"numeric", year:"numeric" }).format(x) + '">' +
+    '<span><small>' + f({ weekday:"short" }).format(x).replace(".","") + '</small>' + x.getDate() + '<small>' + f({ month:"short" }).format(x).replace(".","") + '</small></span></label>').join("");
+  document.getElementById("rHoras").innerHTML = HORARIOS.map(h =>
+    '<label class="chip"><input type="radio" name="horario" required value="' + h + '"><span>' + h + '</span></label>').join(""); }
 formReu.addEventListener("submit", async e => {
   e.preventDefault();
   const T = PAISES[pais], decirReu = t => { avisoReu.textContent = t; avisoReu.classList.add("ver"); };
   if (!formReu.checkValidity()) { decirReu(T.faltan); formReu.reportValidity(); return; }
-  const datos = new FormData(formReu), [a, m, d] = fecha.value.split("-");
-  datos.set("fecha_de_reunion", d + "/" + m + "/" + a);
+  const datos = new FormData(formReu);
+  datos.set("horario", datos.get("horario") + " (" + T.zona + ")");
   datos.append("empresa_del_grupo", T.marca);
   datos.append("_subject", "Pedido de reunión · " + T.marca + " · " + datos.get("nombre") + " " + datos.get("apellido"));
   const original = botonReu.textContent;
@@ -566,7 +660,7 @@ function centrar(arr, dy=0) { let cx=0,cy=0; const n=arr.length/3;
 const T = window.TIERRA, N = 12000, nTierra = T.length/2;
 const fGlobo = new Float32Array(N*3);
 for (let i=0;i<N;i++) { const k=(i<nTierra?i:Math.floor(Math.random()*nTierra))*2; aV(T[k],T[k+1]).toArray(fGlobo,i*3); }
-const FORMAS = [fGlobo, centrar(muestrear(avion(),N)), centrar(muestrear(barco(),N)), centrar(muestrear(camion(),N))];
+const FORMAS = [fGlobo, centrar(muestrear(barco(),N)), centrar(muestrear(camion(),N)), centrar(muestrear(avion(),N))];
 const pos = fGlobo.slice(), retraso = new Float32Array(N), giroPunto = new Float32Array(N);
 for (let i=0;i<N;i++) { retraso[i]=Math.random(); giroPunto[i]=Math.random()-.5; }
 const gPuntos = new THREE.BufferGeometry(); gPuntos.setAttribute("position", new THREE.BufferAttribute(pos,3));
