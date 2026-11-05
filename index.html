@@ -525,7 +525,7 @@ botonWa.addEventListener("click", () => {
 const formReu = document.getElementById("formReunion"), botonReu = document.getElementById("enviarReunion"), avisoReu = document.getElementById("avisoReunion");
 // La hoja de Google donde quedan las reuniones pedidas (google-apps-script/reservas.gs).
 // Vacía, el formulario anda igual pero no sabe qué horarios ya están tomados.
-const RESERVAS_URL = "";
+const RESERVAS_URL = "https://script.google.com/macros/s/AKfycbwq8zLO1d5Stdubmo61nRcJk-26QbqxtQbZ7ZXJ6SW7M_YiwlUB0epUglZmer5BW6lg/exec";
 // los próximos diez días hábiles, desde mañana, y los horarios de atención
 const HORARIOS = ["09:00","10:00","11:00","12:00","14:00","15:00","16:00","17:00"];
 const iso = d => d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0");
