@@ -30,8 +30,14 @@ nav.pegado { background:#0B1110e6; backdrop-filter:blur(10px); padding-top:14px;
 .pais button { background:none; border:0; color:var(--suave); font:inherit; font-size:13px; font-weight:500;
   padding:6px 12px; border-radius:999px; cursor:pointer; }
 .pais button.activo { background:var(--texto); color:var(--fondo); }
+.pais button { display:inline-flex; align-items:center; gap:7px; }
+.bandera { width:18px; height:12px; border-radius:2px; box-shadow:0 0 0 1px #ffffff33; flex-shrink:0; }
+.nav-der { display:flex; align-items:center; gap:22px; }
+.nav-link { font-size:14px; font-weight:500; color:var(--suave); text-decoration:none; }
+.nav-link:hover { color:var(--texto); }
 
 .kicker { font-size:14px; color:var(--acento); letter-spacing:.02em; }
+.portada .kicker { font-size:clamp(16px,1.45vw,21px); font-weight:500; }
 .btn { display:inline-flex; align-items:center; gap:10px; padding:15px 26px; border-radius:999px; font:inherit; font-size:15px; font-weight:600;
   text-decoration:none; border:0; cursor:pointer; transition:transform .25s; }
 .btn:hover { transform:translateY(-2px); }
@@ -70,17 +76,22 @@ h1 em { font-style:normal; color:var(--acento); display:block; }
 
 /* respaldo */
 .blanco { background:#fff; color:var(--tinta); }
-.resp { display:grid; grid-template-columns:1fr 1fr; gap:clamp(28px,6vw,90px); align-items:end; }
+.resp { display:grid; grid-template-columns:1fr 1fr; gap:clamp(28px,6vw,90px); align-items:center; }
 .resp .txt { color:var(--tinta2); font-size:18px; margin-top:18px; max-width:520px; }
-.numeros { display:grid; grid-template-columns:repeat(3,auto); justify-content:space-between; gap:clamp(18px,3vw,44px); }
-.numeros strong { font-family:"Gloock",Georgia,serif; font-weight:400; font-size:clamp(46px,5.2vw,78px); line-height:1; color:var(--tinta); display:block; white-space:nowrap; font-variant-numeric:tabular-nums; }
-.numeros p { font-size:15px; color:var(--tinta2); margin-top:10px; max-width:150px; }
-.logos { display:grid; grid-template-columns:1.1fr repeat(5,1fr); align-items:stretch; margin-top:clamp(52px,9vh,88px); border-top:1px solid var(--lineaC); padding-top:30px; }
-.logos p { font-size:13px; font-weight:600; color:var(--tinta2); align-self:center; max-width:150px; padding-right:20px; }
-.logos div { display:flex; align-items:center; justify-content:center; min-height:84px; padding:8px 18px; border-left:1px solid var(--lineaC); }
+.rotulo { font-size:14px; font-weight:600; color:var(--tinta2); }
+.logos { display:grid; grid-template-columns:repeat(3,1fr); }
+.logos > * { display:flex; align-items:center; justify-content:center; min-height:104px; padding:10px 20px; border-left:1px solid var(--lineaC); border-top:1px solid var(--lineaC); }
+.logos > :nth-child(3n+1) { border-left:0; }
+.logos > :nth-child(-n+3) { border-top:0; }
+.logos .rotulo { justify-content:flex-start; padding-left:0; }
 .logos img { max-height:42px; max-width:100%; width:auto; object-fit:contain; filter:brightness(0); opacity:.55; transition:opacity .25s; }
 .logos img:hover { opacity:.85; }
-.cinta { overflow:hidden; margin-top:clamp(36px,6vh,56px); border-top:1px solid var(--lineaC); border-bottom:1px solid var(--lineaC); padding:20px 0;
+.numeros { display:grid; grid-template-columns:repeat(3,1fr); margin-top:clamp(52px,9vh,88px); border-top:1px solid var(--lineaC); padding-top:clamp(30px,5vh,48px); }
+.numeros > div + div { border-left:1px solid var(--lineaC); padding-left:clamp(18px,3vw,44px); }
+.numeros strong { font-family:"Gloock",Georgia,serif; font-weight:400; font-size:clamp(46px,5.2vw,78px); line-height:1; color:var(--tinta); display:block; white-space:nowrap; font-variant-numeric:tabular-nums; }
+.numeros p { font-size:15px; color:var(--tinta2); margin-top:10px; max-width:190px; }
+.clientes-t { margin-top:clamp(52px,9vh,88px); font-size:16px; color:var(--tinta); }
+.cinta { overflow:hidden; margin-top:16px; border-top:1px solid var(--lineaC); border-bottom:1px solid var(--lineaC); padding:20px 0;
   margin-left:calc(var(--lado) * -1); margin-right:calc(var(--lado) * -1); }
 .cinta div { display:flex; gap:56px; width:max-content; animation:corre 34s linear infinite; }
 .cinta span { font-family:"Gloock",Georgia,serif; font-size:24px; color:var(--tinta); white-space:nowrap; }
@@ -95,6 +106,13 @@ summary::-webkit-details-marker { display:none; }
 summary::after { content:"+"; position:absolute; right:4px; top:16px; font-size:24px; font-weight:400; }
 details[open] summary::after { content:"–"; }
 details p { color:var(--tinta2); padding:0 34px 22px 0; font-size:16px; }
+
+/* reunión: sigue a las preguntas, en el mismo fondo */
+#reunion { padding-top:0; }
+#reunion .cotizar { border-top:1px solid var(--lineaC); padding-top:clamp(72px,11vh,130px); }
+#reunion .txt { color:var(--tinta2); }
+#reunion form { background:#fff; border:1px solid var(--lineaC); }
+#reunion .envios { grid-template-columns:1fr; }
 
 /* cotizar */
 .cotizar { display:grid; grid-template-columns:.8fr 1.2fr; gap:clamp(28px,6vw,90px); align-items:start; }
@@ -128,12 +146,13 @@ footer { position:relative; z-index:3; background:var(--fondo); border-top:1px s
   .portada { padding-bottom:40px; }
   h1 { font-size:clamp(38px,11vw,52px); }
   .bajada { margin-top:14px; font-size:15px; }
-  .numeros { grid-template-columns:repeat(3,auto); }
+  .nav-link { display:none; }
   .numeros strong { font-size:40px; }
   .numeros p { font-size:13px; max-width:100px; }
+  .numeros > div + div { padding-left:14px; }
   .logos { grid-template-columns:1fr 1fr; }
-  .logos p { grid-column:1/-1; max-width:none; padding-bottom:12px; }
-  .logos div { border-left:0; min-height:70px; }
+  .logos > * { border:0 !important; min-height:70px; }
+  .logos .rotulo { grid-column:1/-1; min-height:0; padding-bottom:4px; }
   .acciones { margin-top:20px; }
   .btn { padding:13px 20px; font-size:14px; }
   .medio { top:auto; bottom:84px; --c:0%; }
@@ -154,14 +173,17 @@ footer { position:relative; z-index:3; background:var(--fondo); border-top:1px s
 
 <nav id="nav">
   <a class="marca" href="#inicio" data-t="marca"></a>
-  <div class="pais" role="group" aria-label="País">
-    <button data-pais="ar">AR</button><button data-pais="cl" class="activo">CL</button>
+  <div class="nav-der">
+    <a class="nav-link" href="#reunion" data-t="agendar"></a>
+    <div class="pais" role="group" aria-label="País">
+      <button data-pais="ar"><svg class="bandera" viewBox="0 0 18 12" aria-hidden="true"><rect width="18" height="12" fill="#74ACDF"/><rect y="4" width="18" height="4" fill="#fff"/><circle cx="9" cy="6" r="1.4" fill="#F6B40E"/></svg>AR</button><button data-pais="cl" class="activo"><svg class="bandera" viewBox="0 0 18 12" aria-hidden="true"><rect width="18" height="12" fill="#fff"/><rect y="6" width="18" height="6" fill="#D52B1E"/><rect width="6" height="6" fill="#0039A6"/><polygon points="3,1.3 3.38,2.47 4.62,2.48 3.62,3.2 4,4.38 3,3.65 2,4.38 2.38,3.2 1.38,2.48 2.62,2.47" fill="#fff"/></svg>CL</button>
+    </div>
   </div>
 </nav>
 
 <section class="portada" id="inicio">
   <div class="pie-texto">
-    <p class="kicker">Seguro de transporte de carga · Argentina y Chile</p>
+    <p class="kicker">Seguro de transporte de carga</p>
     <h1>Tu carga se mueve.<em>Tu tranquilidad también.</em></h1>
     <p class="bajada">Certificado online en 5 minutos, con cobertura, de origen a destino final.</p>
     <div class="acciones">
@@ -198,21 +220,22 @@ footer { position:relative; z-index:3; background:var(--fondo); border-top:1px s
         <h2 data-t="respT"></h2>
         <p class="txt" data-t="respP"></p>
       </div>
-      <div class="numeros" id="numeros">
-        <div><strong><span data-cuenta="25" data-antes="+">0</span></strong><p>años de trayectoria</p></div>
-        <div><strong><span data-cuenta="5">0</span> min</strong><p>para emitir el certificado online</p></div>
-        <div><strong><span data-cuenta="5">0</span></strong><p>aseguradoras líderes</p></div>
+      <div class="logos" aria-label="Aseguradoras">
+        <p class="rotulo">Aseguradoras con las que trabajamos</p>
+        <div><img src="logos/sancor.png" alt="Sancor Seguros"></div>
+        <div><img src="logos/chubb.svg" alt="Chubb"></div>
+        <div><img src="logos/integrity.png" alt="Integrity Seguros"></div>
+        <div><img src="logos/mercantil.png" alt="La Mercantil Andina"></div>
+        <div><img src="logos/everest.png" alt="Everest"></div>
       </div>
     </div>
-    <div class="logos" aria-label="Aseguradoras">
-      <p>Aseguradoras con las que trabajamos</p>
-      <div><img src="logos/sancor.png" alt="Sancor Seguros"></div>
-      <div><img src="logos/chubb.svg" alt="Chubb"></div>
-      <div><img src="logos/integrity.png" alt="Integrity Seguros"></div>
-      <div><img src="logos/mercantil.png" alt="La Mercantil Andina"></div>
-      <div><img src="logos/everest.png" alt="Everest"></div>
+    <div class="numeros" id="numeros">
+      <div><strong><span data-cuenta="25" data-antes="+">0</span></strong><p>años de trayectoria</p></div>
+      <div><strong><span data-cuenta="5">0</span> min</strong><p>para emitir el certificado online</p></div>
+      <div><strong><span data-cuenta="5">0</span></strong><p>aseguradoras líderes</p></div>
     </div>
-    <div class="cinta" aria-label="Clientes"><div id="cinta"></div></div>
+    <p class="rotulo clientes-t">Clientes que confían en nosotros</p>
+    <div class="cinta" aria-label="Clientes que confían en nosotros"><div id="cinta"></div></div>
   </div>
 </section>
 
@@ -220,6 +243,32 @@ footer { position:relative; z-index:3; background:var(--fondo); border-top:1px s
   <div class="ancho preguntas">
     <h2 class="aparece">Preguntas frecuentes</h2>
     <div id="faq"></div>
+  </div>
+</section>
+
+<section class="bloque claro" id="reunion">
+  <div class="ancho cotizar">
+    <div class="aparece">
+      <h2 data-t="reuT"></h2>
+      <p class="txt" data-t="reuP"></p>
+    </div>
+    <form id="formReunion" action="https://formspree.io/f/xgvnkrrb" method="POST" novalidate>
+      <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">
+      <div class="campos">
+        <div class="campo"><label for="rNombre">Nombre *</label><input id="rNombre" name="nombre" required autocomplete="given-name"></div>
+        <div class="campo"><label for="rApellido">Apellido *</label><input id="rApellido" name="apellido" required autocomplete="family-name"></div>
+        <div class="campo"><label for="rLugar">Ciudad y país *</label><input id="rLugar" name="ciudad_y_pais" required></div>
+        <div class="campo"><label for="rFecha">Fecha de la reunión *</label><input id="rFecha" name="fecha_de_reunion" type="date" required></div>
+        <div class="campo"><label for="rTel">Teléfono *</label><input id="rTel" name="telefono" type="tel" required autocomplete="tel"></div>
+        <div class="campo"><label for="rCorreo">Correo electrónico *</label><input id="rCorreo" name="email" type="email" required autocomplete="email"></div>
+        <div class="campo todo"><label for="rTema" data-t="temaL"></label><textarea id="rTema" name="tema" required></textarea></div>
+      </div>
+      <div class="pie-form">
+        <small data-t="autoriza"></small>
+        <div class="envios"><button class="btn tinta" type="submit" id="enviarReunion" data-t="agendar"></button></div>
+      </div>
+      <p class="aviso" id="avisoReunion" role="status"></p>
+    </form>
   </div>
 </section>
 
@@ -279,6 +328,10 @@ const BASE = {
   piePais:"Seguro de transporte de carga en Chile", pieContacto:"[Correo y teléfono de Multirisk SpA]", pieRegistro:"[N.º de registro CMF]",
   tel:"+56 9 1234 5678", mail:"nombre@empresa.cl", enviado:"Recibimos tu solicitud. Te contactamos a la brevedad.", fallo:"No pudimos enviar tu solicitud. Inténtalo de nuevo o envíala por WhatsApp.", abierto:"Se abrió WhatsApp con tus datos. Solo falta apretar enviar.", enviando:"Enviando…",
   faltan:"Revisa los campos obligatorios y el formato del correo.", whatsapp:"https://wa.me/5492613424839",
+  agendar:"Agendar reunión", reuT:"¿Prefieres conversarlo? Agenda una reunión.",
+  reuP:"Cuéntanos de qué quieres hablar y qué día te queda cómodo. Te escribimos para confirmar el horario.",
+  temaL:"¿De qué quieres hablar? *", lugar:"Ej.: Santiago, Chile", temaPh:"Ej.: asegurar exportaciones por mar, revisar la póliza del transportista",
+  reuEnviado:"Recibimos tu pedido. Te escribimos para confirmar la reunión.", reuFallo:"No pudimos enviar tu pedido. Inténtalo de nuevo o escríbenos por WhatsApp.",
 };
 const PAISES = {
   cl: BASE,
@@ -289,7 +342,11 @@ const PAISES = {
     autoriza:"Al enviar, autorizás a World Logistic a usar estos datos para responder tu solicitud.",
     piePais:"Seguro de transporte de carga en Argentina", pieContacto:"[Correo de World Logistic] · WhatsApp 261 342 4839", pieRegistro:"[N.º de matrícula SSN]",
     tel:"+54 9 261 123 4567", mail:"nombre@empresa.com.ar", enviado:"Recibimos tu solicitud. Te contactamos a la brevedad.", fallo:"No pudimos enviar tu solicitud. Intentá de nuevo o mandala por WhatsApp.", abierto:"Se abrió WhatsApp con tus datos. Solo falta apretar enviar.", enviando:"Enviando…",
-    faltan:"Revisá los campos obligatorios y el formato del correo." },
+    faltan:"Revisá los campos obligatorios y el formato del correo.",
+    reuT:"¿Preferís charlarlo? Agendá una reunión.",
+    reuP:"Contanos de qué querés hablar y qué día te queda cómodo. Te escribimos para confirmar el horario.",
+    temaL:"¿De qué querés hablar? *", lugar:"Ej.: Mendoza, Argentina",
+    reuFallo:"No pudimos enviar tu pedido. Intentá de nuevo o escribinos por WhatsApp." },
 };
 const FAQ = {
   cl: [["¿Qué cubre el seguro?","Depende de la póliza y de cada operación. Antes de emitir revisamos la mercadería, el trayecto y los riesgos cubiertos, para que sepas qué incluye y qué no."],
@@ -314,7 +371,12 @@ function pintarPais() {
   document.title = T.marca + " · Seguro de transporte de carga";
   document.getElementById("telefono").placeholder = T.tel;
   document.getElementById("correo").placeholder = T.mail;
+  document.getElementById("rTel").placeholder = T.tel;
+  document.getElementById("rCorreo").placeholder = T.mail;
+  document.getElementById("rLugar").placeholder = T.lugar;
+  document.getElementById("rTema").placeholder = T.temaPh;
   document.getElementById("aviso").classList.remove("ver");
+  document.getElementById("avisoReunion").classList.remove("ver");
   document.getElementById("faq").innerHTML = FAQ[pais].map(([q,r],i) => "<details"+(i?"":" open")+"><summary>"+q+"</summary><p>"+r+"</p></details>").join("");
 }
 document.querySelectorAll("[data-pais]").forEach(b => b.onclick = () => { pais=b.dataset.pais; pintarPais(); });
@@ -362,6 +424,29 @@ botonWa.addEventListener("click", () => {
   decir(T.abierto);
   mandar(datos).catch(() => {});
 });
+
+// pedido de reunión: llega al mismo mail, con su propio asunto
+const formReu = document.getElementById("formReunion"), botonReu = document.getElementById("enviarReunion"), avisoReu = document.getElementById("avisoReunion");
+const fecha = document.getElementById("rFecha");
+{ const hoy = new Date(); hoy.setMinutes(hoy.getMinutes() - hoy.getTimezoneOffset()); fecha.min = hoy.toISOString().slice(0,10); }
+formReu.addEventListener("submit", async e => {
+  e.preventDefault();
+  const T = PAISES[pais], decirReu = t => { avisoReu.textContent = t; avisoReu.classList.add("ver"); };
+  if (!formReu.checkValidity()) { decirReu(T.faltan); formReu.reportValidity(); return; }
+  const datos = new FormData(formReu), [a, m, d] = fecha.value.split("-");
+  datos.set("fecha_de_reunion", d + "/" + m + "/" + a);
+  datos.append("empresa_del_grupo", T.marca);
+  datos.append("_subject", "Pedido de reunión · " + T.marca + " · " + datos.get("nombre") + " " + datos.get("apellido"));
+  const original = botonReu.textContent;
+  botonReu.disabled = true; botonReu.textContent = T.enviando;
+  try {
+    const r = await fetch(formReu.action, { method:"POST", body:datos, headers:{ Accept:"application/json" } });
+    if (!r.ok) throw new Error(r.status);
+    decirReu(T.reuEnviado); formReu.reset();
+  } catch (err) { decirReu(T.reuFallo); }
+  botonReu.disabled = false; botonReu.textContent = original;
+});
+
 const obs = new IntersectionObserver(es => es.forEach(x => { if (x.isIntersecting) { x.target.classList.add("visto"); obs.unobserve(x.target); } }), { threshold:.15 });
 document.querySelectorAll(".aparece").forEach(e => obs.observe(e));
 const contar = new IntersectionObserver(es => es.forEach(x => {
